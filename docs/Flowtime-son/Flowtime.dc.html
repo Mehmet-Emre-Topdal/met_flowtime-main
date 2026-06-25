@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1d1d22;background:#f6f6f9;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4,p{margin:0}
+  button{font-family:inherit}
+  input,textarea,select{font-family:inherit}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:#dcdce3;border-radius:99px}
+  ::-webkit-scrollbar-thumb:hover{background:#c9c9d2}
+  ::-webkit-scrollbar-track{background:transparent}
+  @keyframes flpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  textarea:focus,input:focus,select:focus{outline:none}
+</style>
+</helmet>
+<div style="display:flex;height:100vh;width:100%;background:#f6f6f9;overflow:hidden">
+
+  <nav style="flex:0 0 224px;border-right:1px solid #eaeaef;background:#fcfcfe;padding:22px 16px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 8px 22px">
+      <div style="{{ logoStyle }}"></div>
+      <span style="font-size:17px;font-weight:700;letter-spacing:-.02em">Flowtime</span>
+    </div>
+    <div onClick="{{ onGoHome }}" style="{{ navHomeStyle }}" style-hover="background:#f1f1f5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.6"></rect><rect x="13" y="3" width="8" height="8" rx="1.6"></rect><rect x="3" y="13" width="8" height="8" rx="1.6"></rect><rect x="13" y="13" width="8" height="8" rx="1.6"></rect></svg>
+      Ana Sayfa
+    </div>
+    <div onClick="{{ onGoGoals }}" style="{{ navGoalsStyle }}" style-hover="background:#f1f1f5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg>
+      Hedefler <span style="font-size:11px;color:#aeaeb8;font-weight:600;letter-spacing:.04em">GPS</span>
+    </div>
+    <div style="margin-top:18px;padding:14px 6px 6px;border-top:1px solid #eef0f3;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#9494a0">KOLEKSİYONLAR</span>
+    </div>
+    <sc-for list="{{ collections }}" as="c" hint-placeholder-count="3">
+      <div onClick="{{ c.onSelect }}" style="{{ c.rowStyle }}" style-hover="background:#f1f1f5">
+        <span style="{{ c.dotStyle }}"></span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.name }}</span>
+        <span style="font-size:11px;color:#aeaeb8;font-weight:600">{{ c.count }}</span>
+      </div>
+    </sc-for>
+    <button onClick="{{ onOpenCollModal }}" style="{{ addCollStyle }}" style-hover="background:#f1eefb">+ Koleksiyon ekle</button>
+
+    <div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 8px;border-top:1px solid #eef0f3">
+      <div style="width:30px;height:30px;border-radius:99px;background:#e9e6f7;color:#6b59c9;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ initial }}</div>
+      <div style="line-height:1.3"><div style="font-size:13px;font-weight:600">{{ userName }}</div><div style="font-size:11px;color:#9494a0">Odak modu açık</div></div>
+    </div>
+  </nav>
+
+  <main style="flex:1;min-width:0;overflow-y:auto;padding:30px 34px 60px">
+
+    <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Dashboard">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:24px">
+        <div>
+          <h1 style="font-size:25px;font-weight:700;letter-spacing:-.02em">{{ greeting }}</h1>
+          <p style="font-size:14px;color:#6b6b75;margin-top:7px">{{ summary }}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="position:relative">
+            <button onClick="{{ onToggleMenu }}" style="display:flex;align-items:center;gap:9px;padding:9px 13px;background:#fff;border:1px solid #e2e2ea;border-radius:10px;font-size:13.5px;font-weight:600;color:#1d1d22;cursor:pointer;box-shadow:0 1px 2px rgba(20,20,40,0.04)" style-hover="border-color:#d9d2f4">
+              <span style="{{ selCollDotStyle }}"></span>
+              {{ selCollName }}
+              <span style="font-size:11px;color:#aeaeb8;font-weight:600">{{ selCollCount }} görev</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9494a0" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{ collectionMenuOpen }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ onToggleMenu }}" style="position:fixed;inset:0;z-index:20"></div>
+              <div style="position:absolute;top:calc(100% + 6px);right:0;min-width:230px;background:#fff;border:1px solid #ededf2;border-radius:12px;box-shadow:0 12px 32px rgba(20,20,40,0.16);padding:6px;z-index:30">
+                <sc-for list="{{ collections }}" as="c" hint-placeholder-count="3">
+                  <div onClick="{{ c.onSelect }}" style="{{ c.menuStyle }}" style-hover="background:#f4f4f7">
+                    <span style="{{ c.dotStyle }}"></span>
+                    <span style="flex:1">{{ c.name }}</span>
+                    <span style="font-size:11px;color:#aeaeb8;font-weight:600">{{ c.count }}</span>
+                  </div>
+                </sc-for>
+                <div style="height:1px;background:#f0f0f4;margin:5px 8px"></div>
+                <div onClick="{{ onOpenCollModal }}" style="display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#7c6cd4" style-hover="background:#f1eefb">+ Yeni koleksiyon</div>
+              </div>
+            </sc-if>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:12px;color:#9494a0;font-weight:500">Düzen</span>
+            <div style="display:flex;gap:4px;background:#ececf1;padding:4px;border-radius:9px">
+              <button onClick="{{ onVarA }}" style="{{ variantAStyle }}">Panel A</button>
+              <button onClick="{{ onVarB }}" style="{{ variantBStyle }}">Panel B</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ isVariantA }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1 1 620px;min-width:0">
+          <div style="display:flex;gap:14px;align-items:flex-start;overflow-x:auto;padding-bottom:6px">
+            <sc-for list="{{ columns }}" as="col" hint-placeholder-count="3">
+              <div style="flex:1 1 0;min-width:262px;background:#f0f0f4;border-radius:14px;padding:12px 12px 16px">
+                <div style="display:flex;align-items:center;gap:8px;padding:4px 6px 12px">
+                  <span style="{{ col.dotStyle }}"></span>
+                  <span style="font-size:13px;font-weight:600;color:#46464f">{{ col.title }}</span>
+                  <span style="font-size:12px;color:#a0a0aa;font-weight:600;background:#e4e4ea;border-radius:99px;padding:1px 8px">{{ col.count }}</span>
+                </div>
+                <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="2">
+                  <div onClick="{{ card.onOpen }}" style="background:#fff;border:1px solid #ededf2;border-radius:12px;padding:13px 14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(20,20,40,0.04);cursor:grab" style-hover="box-shadow:0 7px 20px rgba(20,20,40,0.09);transform:translateY(-1px);border-color:#e2ddf6">
+                    <div style="{{ card.titleStyle }}">{{ card.title }}</div>
+                    <div style="font-size:12.5px;color:#83838d;line-height:1.45;margin-top:5px">{{ card.desc }}</div>
+                    <sc-if value="{{ card.numeric }}" hint-placeholder-val="{{ true }}">
+                      <div style="margin-top:12px">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px">
+                          <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#1d1d22">{{ card.remaining }}<span style="color:#b3b3bc;font-weight:500"> / {{ card.target }}</span><span style="font-size:11px;color:#aeaeb8;font-weight:500;margin-left:5px">kalan</span></div>
+                          <sc-if value="{{ card.showButtons }}" hint-placeholder-val="{{ true }}">
+                            <div style="display:flex;gap:6px">
+                              <button onClick="{{ card.onMinus }}" style="width:28px;height:28px;border-radius:8px;border:1px solid #e6e6ec;background:#fff;color:#5d5d68;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f4f4f7">−</button>
+                              <button onClick="{{ card.onPlus }}" style="{{ plusBtnStyle }}" style-hover="filter:brightness(.93)">+</button>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ card.isComplete }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:4px;color:#3f9d77;font-size:12px;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Tamamlandı</div>
+                          </sc-if>
+                        </div>
+                        <div style="height:6px;background:#ededf2;border-radius:99px;overflow:hidden"><div style="{{ card.barStyle }}"></div></div>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ card.goal }}" hint-placeholder-val="hedef">
+                      <div style="margin-top:12px"><span style="{{ card.goalChipStyle }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>{{ card.goal }}</span></div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <button style="width:100%;padding:8px;border:none;background:transparent;color:#9a9aa4;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;text-align:left" style-hover="background:#e8e8ee;color:#5d5d68">+ Görev ekle</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <aside style="flex:0 1 292px;min-width:262px;position:sticky;top:0">
+          <div style="background:#fff;border:1px solid #ededf2;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(20,20,40,0.05)">
+            <div style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.09em;color:#9494a0"><span style="width:7px;height:7px;border-radius:99px;background:#3f9d77;animation:flpulse 1.8s ease-in-out infinite"></span>ODAK SEANSI</div>
+            <div style="font-size:14px;font-weight:600;color:#1d1d22;margin-top:15px;line-height:1.35">{{ activeName }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:46px;font-weight:600;letter-spacing:-.02em;color:#1d1d22;margin:8px 0 3px;font-variant-numeric:tabular-nums">{{ timeStr }}</div>
+            <div style="font-size:12.5px;color:#7a7a84">{{ breakStr }}</div>
+            <button onClick="{{ onToggle }}" style="{{ toggleStyle }}" style-hover="filter:brightness(.95)">{{ runLabel }}</button>
+            <div style="display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f4">
+              <div style="flex:1"><div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">2s 14dk</div><div style="font-size:11px;color:#9494a0;margin-top:2px">bugünkü odak</div></div>
+              <div style="flex:1"><div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">3</div><div style="font-size:11px;color:#9494a0;margin-top:2px">seans</div></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isVariantB }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="background:#fff;border:1px solid #ededf2;border-radius:16px;padding:16px 22px;box-shadow:0 1px 3px rgba(20,20,40,0.05);display:flex;align-items:center;gap:26px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:12px;flex:1 1 240px;min-width:200px">
+            <span style="width:9px;height:9px;border-radius:99px;background:#3f9d77;animation:flpulse 1.8s ease-in-out infinite"></span>
+            <div><div style="font-size:11px;font-weight:700;letter-spacing:.09em;color:#9494a0">ODAK SEANSI</div><div style="font-size:14px;font-weight:600;margin-top:3px">{{ activeName }}</div></div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">{{ timeStr }}</div>
+          <div style="flex:1 1 220px;min-width:200px;display:flex;align-items:center;justify-content:flex-end;gap:18px">
+            <span style="font-size:12.5px;color:#7a7a84;text-align:right">{{ breakStr }}</span>
+            <button onClick="{{ onToggle }}" style="{{ toggleBarStyle }}" style-hover="filter:brightness(.95)">{{ runLabel }}</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;overflow-x:auto;padding-bottom:6px">
+          <sc-for list="{{ columns }}" as="col" hint-placeholder-count="3">
+            <div style="flex:1 1 0;min-width:262px;background:#f0f0f4;border-radius:14px;padding:12px 12px 16px">
+              <div style="display:flex;align-items:center;gap:8px;padding:4px 6px 12px">
+                <span style="{{ col.dotStyle }}"></span>
+                <span style="font-size:13px;font-weight:600;color:#46464f">{{ col.title }}</span>
+                <span style="font-size:12px;color:#a0a0aa;font-weight:600;background:#e4e4ea;border-radius:99px;padding:1px 8px">{{ col.count }}</span>
+              </div>
+              <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="2">
+                <div onClick="{{ card.onOpen }}" style="background:#fff;border:1px solid #ededf2;border-radius:12px;padding:13px 14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(20,20,40,0.04);cursor:grab" style-hover="box-shadow:0 7px 20px rgba(20,20,40,0.09);transform:translateY(-1px);border-color:#e2ddf6">
+                  <div style="{{ card.titleStyle }}">{{ card.title }}</div>
+                  <div style="font-size:12.5px;color:#83838d;line-height:1.45;margin-top:5px">{{ card.desc }}</div>
+                  <sc-if value="{{ card.numeric }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:12px">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#1d1d22">{{ card.remaining }}<span style="color:#b3b3bc;font-weight:500"> / {{ card.target }}</span><span style="font-size:11px;color:#aeaeb8;font-weight:500;margin-left:5px">kalan</span></div>
+                        <sc-if value="{{ card.showButtons }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;gap:6px">
+                            <button onClick="{{ card.onMinus }}" style="width:28px;height:28px;border-radius:8px;border:1px solid #e6e6ec;background:#fff;color:#5d5d68;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f4f4f7">−</button>
+                            <button onClick="{{ card.onPlus }}" style="{{ plusBtnStyle }}" style-hover="filter:brightness(.93)">+</button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ card.isComplete }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:center;gap:4px;color:#3f9d77;font-size:12px;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Tamamlandı</div>
+                        </sc-if>
+                      </div>
+                      <div style="height:6px;background:#ededf2;border-radius:99px;overflow:hidden"><div style="{{ card.barStyle }}"></div></div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ card.goal }}" hint-placeholder-val="hedef">
+                    <div style="margin-top:12px"><span style="{{ card.goalChipStyle }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>{{ card.goal }}</span></div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <button style="width:100%;padding:8px;border:none;background:transparent;color:#9a9aa4;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;text-align:left" style-hover="background:#e8e8ee;color:#5d5d68">+ Görev ekle</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isGoals }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Goals (GPS)">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:24px">
+        <div>
+          <h1 style="font-size:25px;font-weight:700;letter-spacing:-.02em">Hedefler</h1>
+          <p style="font-size:14px;color:#6b6b75;margin-top:7px;max-width:58ch">Her GPS bir sprint'tir: <b style="color:#2f9183">Goal</b> + <b style="color:#3f74c4">Plan</b> + <b style="color:#c87f2e">System</b> katmanlarını birlikte taşır.</p>
+        </div>
+        <button onClick="{{ onOpenModal }}" style="{{ primaryBtnStyle }}" style-hover="filter:brightness(.95)">+ Yeni GPS</button>
+      </div>
+      <div style="display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1 1 320px;min-width:280px;display:flex;flex-direction:column;gap:11px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.09em;color:#9494a0;padding:0 2px 2px">SPRINTLER</div>
+          <sc-for list="{{ sprints }}" as="it" hint-placeholder-count="3">
+            <div onClick="{{ it.onSelect }}" style="{{ it.cardStyle }}" style-hover="border-color:#d9d2f4">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                <h3 style="font-size:15px;font-weight:600;color:#1d1d22;line-height:1.35">{{ it.title }}</h3>
+                <span style="{{ it.statusStyle }}">{{ it.statusLabel }}</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:13px">
+                <span style="font-size:11px;font-weight:700;color:#2f9183;background:#e7f4f1;border-radius:6px;padding:3px 7px">G {{ it.goalCount }}</span>
+                <span style="font-size:11px;font-weight:700;color:#3f74c4;background:#ecf2fc;border-radius:6px;padding:3px 7px">P {{ it.moveCount }}</span>
+                <span style="font-size:11px;font-weight:700;color:#c87f2e;background:#fbf3e6;border-radius:6px;padding:3px 7px">S {{ it.reminderCount }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="flex:2 1 480px;min-width:340px;display:flex;flex-direction:column;gap:16px">
+          <div style="background:#fff;border:1px solid #ededf2;border-radius:16px;padding:24px 26px;box-shadow:0 1px 3px rgba(20,20,40,0.05)">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <h2 style="font-size:21px;font-weight:700;letter-spacing:-.01em">{{ sel.title }}</h2>
+              <span style="{{ sel.statusStyle }}">{{ sel.statusLabel }}</span>
+            </div>
+          </div>
+
+          <div style="border:1px solid #d4ebe5;background:#f5fbf9;border-radius:16px;padding:22px 24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><span style="width:26px;height:26px;border-radius:8px;background:#2f9183;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">G</span><div><div style="font-size:14px;font-weight:700;color:#23766b">Goal</div><div style="font-size:11.5px;color:#5f9a90">Ne başarmak istiyorsun</div></div></div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#5f9a90;margin-bottom:9px">HEDEFLER</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ sel.goals }}" as="g" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:9px;font-size:14px;color:#2b2b32;background:#fff;border:1px solid #e4f0eb;border-radius:9px;padding:9px 12px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f9183" stroke-width="2.4"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>{{ g.text }}</div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ sel.hasAnti }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#b08a8a;margin:16px 0 9px">KAÇINILACAKLAR · ANTI-GOALS</div>
+              <div style="display:flex;flex-direction:column;gap:7px">
+                <sc-for list="{{ sel.antiGoals }}" as="a" hint-placeholder-count="1">
+                  <div style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#7a6363"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c87a7a" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"></path></svg>{{ a.text }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="border:1px solid #d8e4f7;background:#f6f9fe;border-radius:16px;padding:22px 24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><span style="width:26px;height:26px;border-radius:8px;background:#3f74c4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">P</span><div><div style="font-size:14px;font-weight:700;color:#345fa1">Plan</div><div style="font-size:11.5px;color:#6789c0">Hedefe götüren kilit adımlar</div></div></div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#6789c0;margin-bottom:10px">MAJOR MOVES</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ sel.moves }}" as="move" hint-placeholder-count="3">
+                <div style="border:1px solid #e4ecf8;border-radius:12px;padding:13px 15px;background:#fff">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <span style="width:22px;height:22px;border-radius:7px;background:#ecf2fc;color:#3f74c4;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;flex:none">{{ move.num }}</span>
+                    <div style="{{ move.titleStyle }}">{{ move.title }}</div>
+                    <sc-if value="{{ move.linked }}" hint-placeholder-val="{{ true }}"><span style="margin-left:auto;font-size:10.5px;color:#9494a0;font-weight:600;background:#f0f0f4;padding:3px 8px;border-radius:6px;flex:none">board'da görev</span></sc-if>
+                  </div>
+                  <sc-if value="{{ move.isNumeric }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:12px;padding-left:32px">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:600;color:#1d1d22">{{ move.remaining }}<span style="color:#b3b3bc;font-weight:500"> / {{ move.target }}</span><span style="font-size:11px;color:#aeaeb8;font-weight:500;margin-left:5px">kalan</span></div>
+                        <sc-if value="{{ move.showButtons }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;gap:6px">
+                            <button onClick="{{ move.onMinus }}" style="width:28px;height:28px;border-radius:8px;border:1px solid #e6e6ec;background:#fff;color:#5d5d68;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f4f4f7">−</button>
+                            <button onClick="{{ move.onPlus }}" style="{{ plusBtnStyle }}" style-hover="filter:brightness(.93)">+</button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ move.isComplete }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:center;gap:4px;color:#3f9d77;font-size:12px;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Tamamlandı</div>
+                        </sc-if>
+                      </div>
+                      <div style="height:6px;background:#ededf2;border-radius:99px;overflow:hidden"><div style="{{ move.barStyle }}"></div></div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ sel.hasCrystal }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#6789c0;margin:18px 0 10px">CRYSTAL BALL · OLASI ENGELLER</div>
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ sel.crystal }}" as="c" hint-placeholder-count="1">
+                  <div style="display:flex;gap:10px;align-items:stretch;background:#fff;border:1px solid #e4ecf8;border-radius:11px;padding:11px 13px">
+                    <div style="flex:1"><div style="font-size:10.5px;font-weight:700;color:#c87a7a;letter-spacing:.04em;margin-bottom:3px">SENARYO</div><div style="font-size:13px;color:#46464f;line-height:1.4">{{ c.scenario }}</div></div>
+                    <div style="width:1px;background:#eef0f3"></div>
+                    <div style="flex:1"><div style="font-size:10.5px;font-weight:700;color:#3f9d77;letter-spacing:.04em;margin-bottom:3px">ÖNLEM</div><div style="font-size:13px;color:#46464f;line-height:1.4">{{ c.prevention }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="border:1px solid #f0e2c8;background:#fdf9f0;border-radius:16px;padding:22px 24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><span style="width:26px;height:26px;border-radius:8px;background:#c87f2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">S</span><div><div style="font-size:14px;font-weight:700;color:#a3681f">System</div><div style="font-size:11.5px;color:#bd8e4e">Nasıl sürdüreceksin</div></div></div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#bd8e4e;margin-bottom:7px">TAKİP · TRACKING</div>
+            <div style="font-size:13.5px;color:#46464f;line-height:1.55;background:#fff;border:1px solid #f3e8d3;border-radius:9px;padding:11px 13px">{{ sel.tracking }}</div>
+            <sc-if value="{{ sel.hasReminders }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#bd8e4e;margin:16px 0 9px">HATIRLATICILAR</div>
+              <div style="display:flex;flex-direction:column;gap:7px">
+                <sc-for list="{{ sel.reminders }}" as="r" hint-placeholder-count="1">
+                  <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #f3e8d3;border-radius:9px;padding:9px 12px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;color:#c87f2e;background:#fbf3e6;border-radius:6px;padding:2px 8px;flex:none">{{ r.time }}</span>
+                    <span style="font-size:12.5px;font-weight:600;color:#7a6a4d;flex:none">{{ r.day }}</span>
+                    <span style="font-size:13px;color:#46464f">{{ r.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#bd8e4e;margin:16px 0 7px">HESAP VEREBİLİRLİK</div>
+            <div style="font-size:13.5px;color:#46464f;line-height:1.55;background:#fff;border:1px solid #f3e8d3;border-radius:9px;padding:11px 13px">{{ sel.accountability }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+  </main>
+
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ onCancel }}" style="position:fixed;inset:0;background:rgba(22,22,32,0.38);backdrop-filter:blur(2px);display:flex;align-items:flex-start;justify-content:center;padding:44px 20px;z-index:50">
+    <div onClick="{{ stop }}" style="width:100%;max-width:560px;max-height:calc(100vh - 88px);background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(20,20,40,0.24);display:flex;flex-direction:column;overflow:hidden">
+      <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:22px 26px;border-bottom:1px solid #f0f0f4">
+        <div><h2 style="font-size:19px;font-weight:700;letter-spacing:-.01em">Yeni GPS oluştur</h2><p style="font-size:12.5px;color:#9494a0;margin-top:3px">Goal · Plan · System katmanlarını birlikte doldur</p></div>
+        <button onClick="{{ onCancel }}" style="width:30px;height:30px;border:none;background:#f2f2f6;border-radius:8px;color:#6b6b75;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none" style-hover="background:#e8e8ee">×</button>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:22px 26px 8px">
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#5d5d68;margin-bottom:7px">Sprint başlığı</label>
+        <input value="{{ form.title }}" onChange="{{ form.onTitle }}" placeholder="ör. Veri Bilimi Sertifikası — Q3" style="width:100%;padding:11px 13px;border:1px solid #e2e2ea;border-radius:10px;font-size:14px;color:#1d1d22;background:#fcfcfe;margin-bottom:18px" style-focus="border-color:#7c6cd4">
+
+        <div style="border:1px solid #d4ebe5;background:#f5fbf9;border-radius:13px;padding:16px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px"><span style="width:24px;height:24px;border-radius:7px;background:#2f9183;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none">G</span><span style="font-size:13.5px;font-weight:700;color:#23766b">Goal — Ne başarmak istiyorsun?</span></div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#5f9a90;margin-bottom:7px">Hedefler (max 3)</label>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ form.goals }}" as="g" hint-placeholder-count="1">
+              <div style="display:flex;gap:7px;align-items:center">
+                <input value="{{ g.text }}" onChange="{{ g.onChange }}" placeholder="Ulaşmak istediğin sonuç..." style="flex:1;padding:9px 12px;border:1px solid #dcebe5;border-radius:9px;font-size:13.5px;background:#fff" style-focus="border-color:#2f9183">
+                <button onClick="{{ g.onDelete }}" style="{{ delBtnStyle }}" style-hover="background:#fbf0f0;color:#d06868">×</button>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ onAddGoal }}" style="{{ addGoalStyle }}" style-hover="filter:brightness(.97)">+ Goal ekle</button>
+
+          <label style="display:block;font-size:12px;font-weight:600;color:#b08a8a;margin:16px 0 7px">Kaçınılacaklar · Anti-Goals</label>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ form.antiGoals }}" as="a" hint-placeholder-count="1">
+              <div style="display:flex;gap:7px;align-items:center">
+                <input value="{{ a.text }}" onChange="{{ a.onChange }}" placeholder="Yapmaktan kaçınacağın şey..." style="flex:1;padding:9px 12px;border:1px solid #ecdede;border-radius:9px;font-size:13.5px;background:#fff" style-focus="border-color:#c87a7a">
+                <button onClick="{{ a.onDelete }}" style="{{ delBtnStyle }}" style-hover="background:#fbf0f0;color:#d06868">×</button>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ onAddAnti }}" style="margin-top:8px;padding:8px 12px;border:1px dashed #e0c9c9;background:#fff;border-radius:9px;color:#b07474;font-size:12.5px;font-weight:600;cursor:pointer;width:100%;text-align:left" style-hover="background:#fdf6f6">+ Anti-Goal ekle</button>
+        </div>
+
+        <div style="border:1px solid #d8e4f7;background:#f6f9fe;border-radius:13px;padding:16px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px"><span style="width:24px;height:24px;border-radius:7px;background:#3f74c4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none">P</span><span style="font-size:13.5px;font-weight:700;color:#345fa1">Plan — Nasıl ulaşacaksın?</span></div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#6789c0;margin-bottom:7px">Major Moves (en az 1, max 5)</label>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ form.majorMoves }}" as="m" hint-placeholder-count="3">
+              <div style="border:1px solid #e0e9f6;background:#fff;border-radius:10px;padding:10px 11px">
+                <div style="display:flex;gap:7px;align-items:center">
+                  <input value="{{ m.title }}" onChange="{{ m.onTitle }}" placeholder="Kilit adım başlığı..." style="flex:1;padding:9px 11px;border:1px solid #dde6f4;border-radius:8px;font-size:13.5px;background:#fcfdff" style-focus="border-color:#3f74c4">
+                  <button onClick="{{ m.onDelete }}" style="{{ delBtnStyle }}" style-hover="background:#fbf0f0;color:#d06868">×</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:9px;flex-wrap:wrap">
+                  <label style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5d5d68;cursor:pointer;user-select:none">
+                    <input type="checkbox" checked="{{ m.isNumeric }}" onChange="{{ m.onToggle }}" style="width:15px;height:15px;accent-color:#3f74c4;cursor:pointer">
+                    Sayısal görev
+                  </label>
+                  <sc-if value="{{ m.isNumeric }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;align-items:center;gap:7px">
+                      <span style="font-size:12px;color:#9494a0">hedef sayı</span>
+                      <input type="number" min="1" value="{{ m.targetCount }}" onChange="{{ m.onTarget }}" style="width:72px;padding:7px 10px;border:1px solid #dde6f4;border-radius:8px;font-size:13px;font-family:'JetBrains Mono',monospace;background:#fcfdff" style-focus="border-color:#3f74c4">
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ onAddMove }}" style="{{ addMoveStyle }}" style-hover="filter:brightness(.97)">+ Major Move ekle</button>
+
+          <label style="display:block;font-size:12px;font-weight:600;color:#6789c0;margin:16px 0 7px">Crystal Ball — Senaryo + önlem</label>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ form.crystalBall }}" as="c" hint-placeholder-count="1">
+              <div style="display:flex;gap:7px;align-items:center">
+                <input value="{{ c.scenario }}" onChange="{{ c.onScenario }}" placeholder="Olası engel..." style="flex:1;padding:9px 11px;border:1px solid #ecdede;border-radius:8px;font-size:13px;background:#fff" style-focus="border-color:#c87a7a">
+                <input value="{{ c.prevention }}" onChange="{{ c.onPrevention }}" placeholder="Önlem..." style="flex:1;padding:9px 11px;border:1px solid #dcebe1;border-radius:8px;font-size:13px;background:#fff" style-focus="border-color:#3f9d77">
+                <button onClick="{{ c.onDelete }}" style="{{ delBtnStyle }}" style-hover="background:#fbf0f0;color:#d06868">×</button>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ onAddCrystal }}" style="margin-top:8px;padding:8px 12px;border:1px dashed #cdd9ef;background:#fff;border-radius:9px;color:#3f74c4;font-size:12.5px;font-weight:600;cursor:pointer;width:100%;text-align:left" style-hover="background:#f4f8fd">+ Senaryo ekle</button>
+        </div>
+
+        <div style="border:1px solid #f0e2c8;background:#fdf9f0;border-radius:13px;padding:16px;margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px"><span style="width:24px;height:24px;border-radius:7px;background:#c87f2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none">S</span><span style="font-size:13.5px;font-weight:700;color:#a3681f">System — Nasıl sürdüreceksin?</span></div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#bd8e4e;margin-bottom:7px">Takip · Tracking</label>
+          <textarea value="{{ form.tracking }}" onChange="{{ form.onTracking }}" placeholder="İlerlemeyi nasıl takip edeceksin?" rows="2" style="width:100%;padding:9px 12px;border:1px solid #f0e2c8;border-radius:9px;font-size:13.5px;background:#fff;resize:vertical;line-height:1.5" style-focus="border-color:#c87f2e"></textarea>
+
+          <label style="display:block;font-size:12px;font-weight:600;color:#bd8e4e;margin:14px 0 7px">Hatırlatıcılar</label>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ form.reminders }}" as="r" hint-placeholder-count="1">
+              <div style="display:flex;gap:7px;align-items:center">
+                <select value="{{ r.day }}" onChange="{{ r.onDay }}" style="padding:8px 9px;border:1px solid #f0e2c8;border-radius:8px;font-size:12.5px;background:#fff;color:#46464f;flex:none">
+                  <option>Pazartesi</option><option>Salı</option><option>Çarşamba</option><option>Perşembe</option><option>Cuma</option><option>Cumartesi</option><option>Pazar</option><option>Hergün</option>
+                </select>
+                <input type="time" value="{{ r.time }}" onChange="{{ r.onTime }}" style="padding:8px 9px;border:1px solid #f0e2c8;border-radius:8px;font-size:12.5px;background:#fff;color:#46464f;flex:none;font-family:'JetBrains Mono',monospace">
+                <input value="{{ r.label }}" onChange="{{ r.onLabel }}" placeholder="Etiket..." style="flex:1;min-width:0;padding:8px 11px;border:1px solid #f0e2c8;border-radius:8px;font-size:13px;background:#fff" style-focus="border-color:#c87f2e">
+                <button onClick="{{ r.onDelete }}" style="{{ delBtnStyle }}" style-hover="background:#fbf0f0;color:#d06868">×</button>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ onAddReminder }}" style="margin-top:8px;padding:8px 12px;border:1px dashed #ecd8b4;background:#fff;border-radius:9px;color:#c87f2e;font-size:12.5px;font-weight:600;cursor:pointer;width:100%;text-align:left" style-hover="background:#fdf8ef">+ Hatırlatıcı ekle</button>
+
+          <label style="display:block;font-size:12px;font-weight:600;color:#bd8e4e;margin:14px 0 7px">Hesap verebilirlik · Accountability</label>
+          <textarea value="{{ form.accountability }}" onChange="{{ form.onAccountability }}" placeholder="Kime karşı sorumlusun?" rows="2" style="width:100%;padding:9px 12px;border:1px solid #f0e2c8;border-radius:9px;font-size:13.5px;background:#fff;resize:vertical;line-height:1.5" style-focus="border-color:#c87f2e"></textarea>
+        </div>
+      </div>
+
+      <div style="flex:none;display:flex;justify-content:flex-end;gap:10px;padding:16px 26px;border-top:1px solid #f0f0f4">
+        <button onClick="{{ onCancel }}" style="padding:10px 18px;border:1px solid #e2e2ea;background:#fff;border-radius:9px;color:#5d5d68;font-size:13.5px;font-weight:600;cursor:pointer" style-hover="background:#f6f6f9">İptal</button>
+        <button onClick="{{ onSave }}" style="{{ saveStyle }}">GPS Oluştur</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ collModalOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ onCancelColl }}" style="position:fixed;inset:0;background:rgba(22,22,32,0.38);backdrop-filter:blur(2px);display:flex;align-items:flex-start;justify-content:center;padding:120px 20px;z-index:60">
+    <div onClick="{{ stop }}" style="width:100%;max-width:420px;background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(20,20,40,0.24);padding:24px 26px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <h2 style="font-size:18px;font-weight:700;letter-spacing:-.01em">Yeni koleksiyon</h2>
+        <button onClick="{{ onCancelColl }}" style="width:30px;height:30px;border:none;background:#f2f2f6;border-radius:8px;color:#6b6b75;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#e8e8ee">×</button>
+      </div>
+      <p style="font-size:12.5px;color:#9494a0">Görevlerini gruplamak için yeni bir liste oluştur.</p>
+      <label style="display:block;font-size:12.5px;font-weight:600;color:#5d5d68;margin:18px 0 7px">Koleksiyon adı</label>
+      <input value="{{ collName }}" onChange="{{ onCollName }}" placeholder="ör. Okul, Ev işleri, Tatil planı" style="width:100%;padding:11px 13px;border:1px solid #e2e2ea;border-radius:10px;font-size:14px;color:#1d1d22;background:#fcfcfe" style-focus="border-color:#7c6cd4">
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:22px">
+        <button onClick="{{ onCancelColl }}" style="padding:10px 18px;border:1px solid #e2e2ea;background:#fff;border-radius:9px;color:#5d5d68;font-size:13.5px;font-weight:600;cursor:pointer" style-hover="background:#f6f6f9">İptal</button>
+        <button onClick="{{ onSaveColl }}" style="{{ collSaveStyle }}">Oluştur</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;userName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ada&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#7c6cd4&quot;,&quot;options&quot;:[&quot;#7c6cd4&quot;,&quot;#5b6ee1&quot;,&quot;#3f9d8f&quot;,&quot;#d98a5b&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;startLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;B&quot;,&quot;options&quot;:[&quot;A&quot;,&quot;B&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = {
+    page: 'dashboard',
+    variant: null,
+    running: false,
+    seconds: 48 * 60 + 12,
+    activeTaskId: 't4',
+    selectedCollectionId: 'c1',
+    collectionMenuOpen: false,
+    collModalOpen: false,
+    collName: '',
+    nextCollId: 4,
+    collections: [
+      { id: 'c1', name: 'Çalışma', color: '#7c6cd4' },
+      { id: 'c2', name: 'Kişisel', color: '#3f9d8f' },
+      { id: 'c3', name: 'Yan Proje', color: '#d99036' },
+    ],
+    tasks: [
+      { id: 't1', collectionId: 'c1', status: 'todo', title: 'İstatistik problemleri çöz', desc: 'Olasılık ve dağılımlar — bölüm sonu soruları.', numeric: true, target: 10, remaining: 10, goal: 'Veri Bilimi Sertifikası — Q3' },
+      { id: 't3', collectionId: 'c1', status: 'todo', title: 'Mülakat hazırlığı', desc: 'Sistem tasarımı sorularını gözden geçir.', numeric: false },
+      { id: 't4', collectionId: 'c1', status: 'doing', title: 'Deep Work — kalan bölümler', desc: 'Cal Newport — odak üzerine son üç bölüm.', numeric: true, target: 30, remaining: 12 },
+      { id: 't9', collectionId: 'c1', status: 'done', title: 'Pandas alıştırmaları', desc: 'Veri temizleme egzersizleri.', numeric: true, target: 8, remaining: 0, goal: 'Veri Bilimi Sertifikası — Q3' },
+      { id: 'k1', collectionId: 'c2', status: 'todo', title: 'Su iç', desc: 'Gün içinde 8 bardak su.', numeric: true, target: 8, remaining: 5 },
+      { id: 'k2', collectionId: 'c2', status: 'todo', title: 'Haftalık market alışverişi', desc: 'Liste: sebze, kahve, deterjan.', numeric: false },
+      { id: 'k3', collectionId: 'c2', status: 'doing', title: '5 km koşu', desc: 'Akşam parkta tempolu koşu.', numeric: true, target: 5, remaining: 2, goal: 'Sağlıklı Yaşam Sistemi' },
+      { id: 'k4', collectionId: 'c2', status: 'done', title: 'Doktor randevusu al', desc: 'Yıllık kontrol için randevu.', numeric: false },
+      { id: 't2', collectionId: 'c3', status: 'todo', title: 'Tasarım kritiği notları', desc: 'Geçen haftaki kullanıcı testinden çıkan maddeleri derle.', numeric: false },
+      { id: 'p1', collectionId: 'c3', status: 'todo', title: 'Logo eskizleri', desc: 'Farklı yönlerde 6 eskiz çıkar.', numeric: true, target: 6, remaining: 6 },
+      { id: 't5', collectionId: 'c3', status: 'doing', title: 'Landing page tasarımı', desc: 'Hero ve fiyatlandırma bölümü ilk taslak.', numeric: false, goal: 'Yan Proje Lansmanı' },
+      { id: 't6', collectionId: 'c3', status: 'doing', title: 'Haftalık rapor', desc: 'Metrikleri topla ve kısa bir özet yaz.', numeric: false },
+      { id: 'p2', collectionId: 'c3', status: 'done', title: 'Domain satın al', desc: '.com uzantısını kaydet.', numeric: false },
+    ],
+    sprints: [
+      {
+        id: 's1', title: 'Veri Bilimi Sertifikası — Q3', status: 'active',
+        goals: ['Sertifikayı tamamla', 'Capstone projesini yayınla'],
+        antiGoals: ['Tutorial cehennemine düşmemek', 'Teoriye takılıp pratik yapmamak'],
+        majorMoves: [
+          { id: 's1m1', title: 'İstatistik problemleri çöz', isNumeric: true, targetCount: 10, remaining: 6, taskId: 't1' },
+          { id: 's1m2', title: 'Pandas alıştırmaları', isNumeric: true, targetCount: 8, remaining: 0, taskId: 't9' },
+          { id: 's1m3', title: 'Capstone projesini bitir', isNumeric: false, taskId: null },
+        ],
+        crystalBall: [
+          { scenario: 'Hafta içi vakit bulamamak', prevention: 'Sabah 07–08 arası sabit çalışma bloğu' },
+          { scenario: 'Matematik konularında tıkanmak', prevention: 'Khan Academy ile haftalık tekrar' },
+        ],
+        tracking: 'Haftalık tamamlanan modül sayısı + capstone commit grafiği.',
+        reminders: [
+          { day: 'Pazartesi', time: '07:00', label: 'Haftalık plan' },
+          { day: 'Cuma', time: '18:00', label: 'İlerleme kontrolü' },
+        ],
+        accountability: 'Çalışma arkadaşım Deniz ile her cuma 15 dk check-in.',
+      },
+      {
+        id: 's2', title: 'Yan Proje Lansmanı', status: 'active',
+        goals: ['İlk 100 kullanıcıya ulaş', 'Lansmanı 3 ayda tamamla'],
+        antiGoals: ['Mükemmeliyetçilik yüzünden lansmanı ertelememek'],
+        majorMoves: [
+          { id: 's2m1', title: 'Landing page tasarımı', isNumeric: false, taskId: 't5' },
+          { id: 's2m2', title: 'Beta kullanıcıları topla', isNumeric: true, targetCount: 20, remaining: 14, taskId: null },
+          { id: 's2m3', title: 'Lansman günü', isNumeric: false, taskId: null },
+        ],
+        crystalBall: [
+          { scenario: 'Beta için yeterli ilgi olmaması', prevention: '3 farklı toplulukta paylaşım yap' },
+        ],
+        tracking: 'Kayıt sayısı ve haftalık aktif kullanıcı sayısı.',
+        reminders: [
+          { day: 'Çarşamba', time: '20:00', label: 'Build günü' },
+        ],
+        accountability: 'Twitter\u2019da haftalık build-in-public paylaşımı.',
+      },
+      {
+        id: 's3', title: 'Sağlıklı Yaşam Sistemi', status: 'active',
+        goals: ['Haftada 3 gün hareket et'],
+        antiGoals: ['Gece geç saatte yatmamak'],
+        majorMoves: [
+          { id: 's3m1', title: '5 km koşu', isNumeric: true, targetCount: 5, remaining: 0, taskId: 't7' },
+          { id: 's3m2', title: 'Uyku saatini sabitle', isNumeric: false, taskId: null },
+        ],
+        crystalBall: [
+          { scenario: 'Yağmurlu günler', prevention: 'Evde 20 dk HIIT alternatifi' },
+        ],
+        tracking: 'Günlük adım sayısı ve uyku saati ortalaması.',
+        reminders: [
+          { day: 'Hergün', time: '22:30', label: 'Uyku hatırlatıcısı' },
+        ],
+        accountability: 'Eşimle birlikte sabah yürüyüşü.',
+      },
+    ],
+    selectedSprintId: 's1',
+    modalOpen: false,
+    form: null,
+    nextId: 1,
+  };
+
+  componentDidMount() {
+    this._iv = setInterval(() => {
+      if (this.state.running) this.setState(s => ({ seconds: s.seconds + 1 }));
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this._iv); }
+
+  fmt(s) {
+    const pad = n => String(n).padStart(2, '0');
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+    return h > 0 ? h + ':' + pad(m) + ':' + pad(ss) : pad(m) + ':' + pad(ss);
+  }
+  plus(id) { this.setState(s => ({ tasks: s.tasks.map(t => t.id === id ? { ...t, remaining: Math.max(0, t.remaining - 1) } : t) })); }
+  minus(id) { this.setState(s => ({ tasks: s.tasks.map(t => t.id === id ? { ...t, remaining: Math.min(t.target, t.remaining + 1) } : t) })); }
+
+  movePlus(sid, mid) { this.setState(s => ({ sprints: s.sprints.map(sp => sp.id === sid ? { ...sp, majorMoves: sp.majorMoves.map(m => m.id === mid ? { ...m, remaining: Math.max(0, m.remaining - 1) } : m) } : sp) })); }
+  moveMinus(sid, mid) { this.setState(s => ({ sprints: s.sprints.map(sp => sp.id === sid ? { ...sp, majorMoves: sp.majorMoves.map(m => m.id === mid ? { ...m, remaining: Math.min(m.targetCount, m.remaining + 1) } : m) } : sp) })); }
+
+  blankForm() {
+    return {
+      title: '',
+      goals: [{ id: 1, text: '' }],
+      antiGoals: [{ id: 2, text: '' }],
+      majorMoves: [
+        { id: 3, title: '', isNumeric: false, targetCount: 5 },
+        { id: 4, title: '', isNumeric: false, targetCount: 5 },
+        { id: 5, title: '', isNumeric: false, targetCount: 5 },
+      ],
+      crystalBall: [{ id: 6, scenario: '', prevention: '' }],
+      tracking: '',
+      reminders: [{ id: 7, day: 'Pazartesi', time: '09:00', label: '' }],
+      accountability: '',
+    };
+  }
+  openModal() { this.setState({ modalOpen: true, form: this.blankForm(), nextId: 8 }); }
+  setForm(patch) { this.setState(s => ({ form: { ...s.form, ...patch } })); }
+  addRow(key, factory, max) { this.setState(s => { const list = s.form[key]; if (max && list.length >= max) return null; return { form: { ...s.form, [key]: [...list, factory(s.nextId)] }, nextId: s.nextId + 1 }; }); }
+  updateRow(key, id, patch) { this.setState(s => ({ form: { ...s.form, [key]: s.form[key].map(r => r.id === id ? { ...r, ...patch } : r) } })); }
+  delRow(key, id, min) { this.setState(s => { const list = s.form[key]; if (min && list.length <= min) return null; return { form: { ...s.form, [key]: list.filter(r => r.id !== id) } }; }); }
+
+  saveGps() {
+    const f = this.state.form;
+    if (!f.title.trim() || !f.majorMoves.some(m => m.title.trim())) return;
+    let c = 0;
+    const moves = f.majorMoves.filter(m => m.title.trim()).map(m => {
+      const tc = m.isNumeric ? Math.max(1, parseInt(m.targetCount) || 1) : 0;
+      return { id: 'nm' + Date.now() + (c++), title: m.title.trim(), isNumeric: !!m.isNumeric, targetCount: tc, remaining: tc, taskId: null };
+    });
+    const sprint = {
+      id: 's' + Date.now(), title: f.title.trim(), status: 'active',
+      goals: f.goals.map(g => g.text.trim()).filter(Boolean).slice(0, 3),
+      antiGoals: f.antiGoals.map(a => a.text.trim()).filter(Boolean),
+      majorMoves: moves,
+      crystalBall: f.crystalBall.filter(c => c.scenario.trim() || c.prevention.trim()).map(c => ({ scenario: c.scenario.trim(), prevention: c.prevention.trim() })),
+      tracking: f.tracking.trim() || 'Belirtilmedi.',
+      reminders: f.reminders.filter(r => r.label.trim()).map(r => ({ day: r.day, time: r.time, label: r.label.trim() })),
+      accountability: f.accountability.trim() || 'Belirtilmedi.',
+    };
+    this.setState(s => ({ sprints: [...s.sprints, sprint], modalOpen: false, selectedSprintId: sprint.id }));
+  }
+
+  selectCollection(id) { this.setState({ selectedCollectionId: id, collectionMenuOpen: false, page: 'dashboard' }); }
+  openCollModal() { this.setState({ collModalOpen: true, collName: '', collectionMenuOpen: false }); }
+  saveCollection() {
+    const name = this.state.collName.trim();
+    if (!name) return;
+    const palette = ['#7c6cd4', '#3f9d8f', '#d99036', '#5b8def', '#c87a7a'];
+    this.setState(s => { const id = 'c' + s.nextCollId; return { collections: [...s.collections, { id, name, color: palette[s.collections.length % palette.length] }], nextCollId: s.nextCollId + 1, selectedCollectionId: id, collModalOpen: false, page: 'dashboard' }; });
+  }
+
+  renderVals() {
+    const accent = this.props.accent || '#7c6cd4';
+    const variant = this.state.variant || this.props.startLayout || 'B';
+    const userName = this.props.userName || 'Ada';
+
+    const meta = [
+      { key: 'todo', title: 'Yapılacak', dot: '#bcbcc6' },
+      { key: 'doing', title: 'Devam Eden', dot: '#d9a24e' },
+      { key: 'done', title: 'Tamamlanan', dot: '#3f9d77' },
+    ];
+    const chip = { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 9px', borderRadius: '7px', fontSize: '11.5px', fontWeight: 600, color: '#5d5d68', background: '#f0f0f4' };
+    const columns = meta.map(col => {
+      const cards = this.state.tasks.filter(t => t.status === col.key && t.collectionId === this.state.selectedCollectionId).map(t => {
+        const isComplete = t.status === 'done' || (t.numeric && t.remaining <= 0);
+        const pct = t.numeric ? Math.round((t.target - t.remaining) / t.target * 100) : 0;
+        return {
+          id: t.id, title: t.title, desc: t.desc, numeric: !!t.numeric,
+          remaining: t.remaining, target: t.target,
+          isComplete, showButtons: !!t.numeric && !isComplete,
+          titleStyle: { fontSize: '14px', fontWeight: 600, lineHeight: 1.35, color: isComplete ? '#9aa0a6' : '#1d1d22', textDecoration: isComplete ? 'line-through' : 'none' },
+          barStyle: { width: pct + '%', height: '100%', borderRadius: '99px', background: isComplete ? '#3f9d77' : accent, transition: 'width .25s ease' },
+          goal: t.goal || '',
+          goalChipStyle: chip,
+          onPlus: () => this.plus(t.id),
+          onMinus: () => this.minus(t.id),
+          onOpen: () => this.setState({ activeTaskId: t.id }),
+        };
+      });
+      return { key: col.key, title: col.title, count: cards.length, dotStyle: { background: col.dot, width: '8px', height: '8px', borderRadius: '99px', flex: 'none' }, cards };
+    });
+
+    const at = this.state.tasks.find(t => t.id === this.state.activeTaskId) || this.state.tasks[0];
+    const totalMin = Math.floor(this.state.seconds / 60);
+    const breakMin = Math.max(1, Math.floor(totalMin / 5));
+
+    const statusMap = {
+      active: { label: 'Aktif', c: '#2f9183', bg: '#e7f4f1' },
+      completed: { label: 'Tamamlandı', c: '#6b6b75', bg: '#eeeef2' },
+      archived: { label: 'Arşiv', c: '#9494a0', bg: '#f2f2f6' },
+    };
+    const stStyle = st => { const m = statusMap[st] || statusMap.active; return { display: 'inline-flex', alignItems: 'center', padding: '3px 10px', borderRadius: '7px', fontSize: '11.5px', fontWeight: 700, color: m.c, background: m.bg, flex: 'none' }; };
+
+    const sprints = this.state.sprints.map(sp => {
+      const seld = sp.id === this.state.selectedSprintId;
+      const m = statusMap[sp.status] || statusMap.active;
+      return {
+        id: sp.id, title: sp.title, statusLabel: m.label, statusStyle: stStyle(sp.status),
+        goalCount: sp.goals.length, moveCount: sp.majorMoves.length, reminderCount: sp.reminders.length,
+        cardStyle: { padding: '15px 16px', borderRadius: '13px', cursor: 'pointer', transition: 'all .15s ease', border: '1px solid ' + (seld ? accent : '#ededf2'), background: seld ? accent + '0d' : '#fff', boxShadow: seld ? '0 3px 10px ' + accent + '22' : '0 1px 2px rgba(20,20,40,0.04)' },
+        onSelect: () => this.setState({ selectedSprintId: sp.id }),
+      };
+    });
+
+    const spRaw = this.state.sprints.find(g => g.id === this.state.selectedSprintId) || this.state.sprints[0];
+    const sm = statusMap[spRaw.status] || statusMap.active;
+    const sel = {
+      title: spRaw.title, statusLabel: sm.label, statusStyle: stStyle(spRaw.status),
+      goals: spRaw.goals.map(t => ({ text: t })),
+      antiGoals: spRaw.antiGoals.map(t => ({ text: t })), hasAnti: spRaw.antiGoals.length > 0,
+      moves: spRaw.majorMoves.map((m, i) => {
+        const isComplete = m.isNumeric && m.remaining <= 0;
+        const pct = m.isNumeric ? Math.round((m.targetCount - m.remaining) / m.targetCount * 100) : 0;
+        return {
+          num: i + 1, title: m.title, isNumeric: !!m.isNumeric,
+          remaining: m.remaining, target: m.targetCount, isComplete,
+          showButtons: !!m.isNumeric && !isComplete, linked: !!m.taskId,
+          titleStyle: { fontSize: '14px', fontWeight: 600, flex: 1, color: isComplete ? '#9aa0a6' : '#1d1d22', textDecoration: isComplete ? 'line-through' : 'none' },
+          barStyle: { width: pct + '%', height: '100%', borderRadius: '99px', background: isComplete ? '#3f9d77' : '#3f74c4', transition: 'width .25s ease' },
+          onPlus: () => this.movePlus(spRaw.id, m.id),
+          onMinus: () => this.moveMinus(spRaw.id, m.id),
+        };
+      }),
+      crystal: spRaw.crystalBall, hasCrystal: spRaw.crystalBall.length > 0,
+      tracking: spRaw.tracking,
+      reminders: spRaw.reminders, hasReminders: spRaw.reminders.length > 0,
+      accountability: spRaw.accountability,
+    };
+
+    const tBase = { width: '100%', marginTop: '16px', padding: '11px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' };
+    const barBase = { padding: '11px 26px', borderRadius: '10px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' };
+    const running = this.state.running;
+    const filled = { background: accent, color: '#fff', border: 'none' };
+    const outlined = { background: '#fff', color: accent, border: '1px solid ' + accent + '55' };
+
+    const seg = active => ({ flex: '1', padding: '7px 14px', textAlign: 'center', fontSize: '13px', fontWeight: active ? 600 : 500, borderRadius: '7px', cursor: 'pointer', border: 'none', background: active ? '#fff' : 'transparent', color: active ? accent : '#5d5d68', boxShadow: active ? '0 1px 2px rgba(0,0,0,0.08)' : 'none' });
+    const navStyle = active => ({ display: 'flex', alignItems: 'center', gap: '11px', padding: '10px 12px', borderRadius: '9px', cursor: 'pointer', fontSize: '14px', fontWeight: active ? 600 : 500, color: active ? '#1d1d22' : '#5d5d68', background: active ? accent + '1a' : 'transparent' });
+
+    const delBtnStyle = { width: '34px', height: '34px', flex: 'none', border: '1px solid #ececf1', background: '#fff', borderRadius: '8px', color: '#aeaeb8', fontSize: '17px', cursor: 'pointer' };
+    const dashAdd = (color, border, bg) => ({ marginTop: '8px', padding: '8px 12px', border: '1px dashed ' + border, background: bg, borderRadius: '9px', color: color, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', width: '100%', textAlign: 'left' });
+
+    const collCount = id => this.state.tasks.filter(t => t.collectionId === id).length;
+    const collMenuStyle = active => ({ display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 11px', borderRadius: '8px', cursor: 'pointer', fontSize: '13.5px', fontWeight: active ? 600 : 500, color: active ? '#1d1d22' : '#5d5d68', background: active ? accent + '14' : 'transparent' });
+    const collRowStyle = active => ({ display: 'flex', alignItems: 'center', gap: '9px', padding: '8px 12px', borderRadius: '9px', cursor: 'pointer', fontSize: '13.5px', fontWeight: active ? 600 : 500, color: active ? '#1d1d22' : '#5d5d68', background: active ? accent + '14' : 'transparent' });
+    const collections = this.state.collections.map(c => { const active = c.id === this.state.selectedCollectionId; return { id: c.id, name: c.name, count: collCount(c.id), isActive: active, onSelect: () => this.selectCollection(c.id), rowStyle: collRowStyle(active), menuStyle: collMenuStyle(active), dotStyle: { width: '9px', height: '9px', borderRadius: '3px', background: c.color, flex: 'none' } }; });
+    const selColl = this.state.collections.find(c => c.id === this.state.selectedCollectionId) || this.state.collections[0];
+
+    const f = this.state.form;
+    const out = {
+      userName, initial: userName.trim().charAt(0).toUpperCase() || 'A',
+      greeting: 'Günaydın, ' + userName,
+      summary: 'Bugün 2 saat 14 dakika odaklandın · 3 odak seansı tamamladın.',
+      isDashboard: this.state.page === 'dashboard',
+      isGoals: this.state.page === 'goals',
+      onGoHome: () => this.setState({ page: 'dashboard' }),
+      onGoGoals: () => this.setState({ page: 'goals' }),
+      navHomeStyle: navStyle(this.state.page === 'dashboard'),
+      navGoalsStyle: navStyle(this.state.page === 'goals'),
+      logoStyle: { width: '28px', height: '28px', borderRadius: '8px', background: accent, boxShadow: 'inset 0 -6px 10px rgba(0,0,0,0.12)' },
+
+      columns,
+      isVariantA: variant === 'A',
+      isVariantB: variant === 'B',
+      onVarA: () => this.setState({ variant: 'A' }),
+      onVarB: () => this.setState({ variant: 'B' }),
+      variantAStyle: seg(variant === 'A'),
+      variantBStyle: seg(variant === 'B'),
+      plusBtnStyle: { width: '28px', height: '28px', borderRadius: '8px', border: 'none', background: accent, color: '#fff', fontSize: '18px', lineHeight: 1, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+
+      activeName: at ? at.title : '—',
+      timeStr: this.fmt(this.state.seconds),
+      breakStr: 'Şu ana kadar ' + breakMin + ' dk mola hak ettin',
+      runLabel: running ? 'Duraklat' : 'Başlat',
+      onToggle: () => this.setState(s => ({ running: !s.running })),
+      toggleStyle: { ...tBase, ...(running ? outlined : filled) },
+      toggleBarStyle: { ...barBase, ...(running ? outlined : filled) },
+
+      sprints, sel,
+      onOpenModal: () => this.openModal(),
+      primaryBtnStyle: { padding: '10px 18px', borderRadius: '9px', border: 'none', background: accent, color: '#fff', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer' },
+
+      modalOpen: this.state.modalOpen,
+      onCancel: () => this.setState({ modalOpen: false }),
+      stop: (e) => e.stopPropagation(),
+      delBtnStyle,
+
+      collections,
+      selCollName: selColl ? selColl.name : '—',
+      selCollCount: selColl ? collCount(selColl.id) : 0,
+      selCollDotStyle: { width: '9px', height: '9px', borderRadius: '3px', background: selColl ? selColl.color : accent, flex: 'none' },
+      collectionMenuOpen: this.state.collectionMenuOpen,
+      onToggleMenu: () => this.setState(s => ({ collectionMenuOpen: !s.collectionMenuOpen })),
+      onOpenCollModal: () => this.openCollModal(),
+      addCollStyle: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', padding: '8px 12px', border: 'none', background: 'transparent', color: accent, fontSize: '13px', fontWeight: 600, cursor: 'pointer', borderRadius: '9px', textAlign: 'left', width: '100%' },
+      collModalOpen: this.state.collModalOpen,
+      collName: this.state.collName,
+      onCollName: e => this.setState({ collName: e.target.value }),
+      onSaveColl: () => this.saveCollection(),
+      onCancelColl: () => this.setState({ collModalOpen: false }),
+      collSaveStyle: { padding: '10px 20px', borderRadius: '9px', border: 'none', background: accent, color: '#fff', fontSize: '13.5px', fontWeight: 600, cursor: this.state.collName.trim() ? 'pointer' : 'not-allowed', opacity: this.state.collName.trim() ? 1 : 0.45 },
+    };
+
+    if (f) {
+      const canSubmit = !!f.title.trim() && f.majorMoves.some(m => m.title.trim());
+      out.onAddGoal = () => this.addRow('goals', id => ({ id, text: '' }), 3);
+      out.onAddAnti = () => this.addRow('antiGoals', id => ({ id, text: '' }));
+      out.onAddMove = () => this.addRow('majorMoves', id => ({ id, title: '', isNumeric: false, targetCount: 5 }), 5);
+      out.onAddCrystal = () => this.addRow('crystalBall', id => ({ id, scenario: '', prevention: '' }));
+      out.onAddReminder = () => this.addRow('reminders', id => ({ id, day: 'Pazartesi', time: '09:00', label: '' }));
+      out.onSave = () => this.saveGps();
+      out.addGoalStyle = { ...dashAdd('#2f9183', '#cbe6dd', '#fff'), opacity: f.goals.length >= 3 ? 0.45 : 1 };
+      out.addMoveStyle = { ...dashAdd('#3f74c4', '#cdd9ef', '#fff'), opacity: f.majorMoves.length >= 5 ? 0.45 : 1 };
+      out.saveStyle = { padding: '10px 20px', borderRadius: '9px', border: 'none', background: accent, color: '#fff', fontSize: '13.5px', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', opacity: canSubmit ? 1 : 0.45 };
+      out.form = {
+        title: f.title, tracking: f.tracking, accountability: f.accountability,
+        onTitle: e => this.setForm({ title: e.target.value }),
+        onTracking: e => this.setForm({ tracking: e.target.value }),
+        onAccountability: e => this.setForm({ accountability: e.target.value }),
+        goals: f.goals.map(g => ({ id: g.id, text: g.text, onChange: e => this.updateRow('goals', g.id, { text: e.target.value }), onDelete: () => this.delRow('goals', g.id) })),
+        antiGoals: f.antiGoals.map(a => ({ id: a.id, text: a.text, onChange: e => this.updateRow('antiGoals', a.id, { text: e.target.value }), onDelete: () => this.delRow('antiGoals', a.id) })),
+        majorMoves: f.majorMoves.map(m => ({ id: m.id, title: m.title, isNumeric: m.isNumeric, targetCount: m.targetCount, onTitle: e => this.updateRow('majorMoves', m.id, { title: e.target.value }), onToggle: e => this.updateRow('majorMoves', m.id, { isNumeric: e.target.checked }), onTarget: e => this.updateRow('majorMoves', m.id, { targetCount: e.target.value }), onDelete: () => this.delRow('majorMoves', m.id, 1) })),
+        crystalBall: f.crystalBall.map(c => ({ id: c.id, scenario: c.scenario, prevention: c.prevention, onScenario: e => this.updateRow('crystalBall', c.id, { scenario: e.target.value }), onPrevention: e => this.updateRow('crystalBall', c.id, { prevention: e.target.value }), onDelete: () => this.delRow('crystalBall', c.id) })),
+        reminders: f.reminders.map(r => ({ id: r.id, day: r.day, time: r.time, label: r.label, onDay: e => this.updateRow('reminders', r.id, { day: e.target.value }), onTime: e => this.updateRow('reminders', r.id, { time: e.target.value }), onLabel: e => this.updateRow('reminders', r.id, { label: e.target.value }), onDelete: () => this.delRow('reminders', r.id) })),
+      };
+    } else {
+      out.form = { title: '', tracking: '', accountability: '', goals: [], antiGoals: [], majorMoves: [], crystalBall: [], reminders: [] };
+      out.addGoalStyle = dashAdd('#2f9183', '#cbe6dd', '#fff');
+      out.addMoveStyle = dashAdd('#3f74c4', '#cdd9ef', '#fff');
+      out.saveStyle = { padding: '10px 20px', borderRadius: '9px', border: 'none', background: accent, color: '#fff', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer' };
+      out.onAddGoal = out.onAddAnti = out.onAddMove = out.onAddCrystal = out.onAddReminder = out.onSave = () => {};
+    }
+    return out;
+  }
+}
+</script>
+</body>
+</html>

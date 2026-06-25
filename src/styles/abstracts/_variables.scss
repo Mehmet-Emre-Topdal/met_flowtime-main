@@ -1,0 +1,77 @@
+:root {
+    /* ─── Light Surface Palette ─────────────────────── */
+    --background: #f6f6f9;
+    --background-2: #f0f0f4;
+    --foreground: #1d1d22;
+    --foreground-muted: #6b6b75;
+
+    /* ─── Accent — Soft Violet ───────────────────────── */
+    --accent: #7c6cd4;
+    --accent-hover: #6b59c9;
+    --accent-soft: rgba(124, 108, 212, 0.10);
+    --accent-glow: rgba(124, 108, 212, 0.18);
+    --accent-secondary: #3f9d77;
+    /* emerald */
+    --accent-warm: #d9a24e;
+    /* amber for highlights */
+
+    /* ─── Surfaces ───────────────────────────────────── */
+    --surface: #ffffff;
+    --surface-elevated: #ffffff;
+    --surface-glass: rgba(255, 255, 255, 0.78);
+    --surface-hover: #f1f1f5;
+    --surface-sunken: #f0f0f4;
+    --sidebar-bg: #fcfcfe;
+
+    /* ─── Borders ────────────────────────────────────── */
+    --border: #ededf2;
+    --border-strong: #e2e2ea;
+    --border-accent: rgba(124, 108, 212, 0.4);
+
+    /* ─── Text ───────────────────────────────────────── */
+    --muted: #9494a0;
+    --secondary: #6b6b75;
+    --hover: #f1f1f5;
+    --subtle: #f0f0f4;
+
+    /* ─── States ─────────────────────────────────────── */
+    --success: #3f9d77;
+    --destructive: #d06868;
+    --destructive-hover: #be5454;
+    --warning: #d9a24e;
+
+    /* ─── GPS Layers — Goal / Plan / System ──────────── */
+    --gps-goal: #2f9183;
+    --gps-goal-soft: #f5fbf9;
+    --gps-goal-border: #d4ebe5;
+    --gps-plan: #3f74c4;
+    --gps-plan-soft: #f6f9fe;
+    --gps-plan-border: #d8e4f7;
+    --gps-system: #c87f2e;
+    --gps-system-soft: #fdf9f0;
+    --gps-system-border: #f0e2c8;
+
+    /* ─── Typography ─────────────────────────────────── */
+    --font-heading: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    --font-body: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* ─── Shadows ────────────────────────────────────── */
+    --shadow-sm: 0 1px 2px rgba(20, 20, 40, 0.04);
+    --shadow-md: 0 7px 20px rgba(20, 20, 40, 0.09);
+    --shadow-lg: 0 12px 32px rgba(20, 20, 40, 0.16);
+    --shadow-xl: 0 24px 60px rgba(20, 20, 40, 0.24);
+    --shadow-glow: 0 4px 16px rgba(124, 108, 212, 0.18);
+    --shadow-glow-sm: 0 2px 8px rgba(124, 108, 212, 0.16);
+
+    /* ─── Radius ─────────────────────────────────────── */
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+
+    /* ─── Transitions ────────────────────────────────── */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.25s ease;
+    --transition-slow: 0.4s ease;
+}

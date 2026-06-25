@@ -1,0 +1,38 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(resource) {
+      return request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    function isCreatingOwn() {
+      return request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /tasks/{taskId} {
+      allow read, update, delete: if isOwner(resource);
+      allow create: if isCreatingOwn();
+    }
+
+    match /sessions/{sessionId} {
+      allow read, update, delete: if isOwner(resource);
+      allow create: if isCreatingOwn();
+    }
+
+    match /gps/{gpsId} {
+      allow read, update, delete: if isOwner(resource);
+      allow create: if isCreatingOwn();
+    }
+
+    match /collections/{collectionId} {
+      allow read, update, delete: if isOwner(resource);
+      allow create: if isCreatingOwn();
+    }
+  }
+}
