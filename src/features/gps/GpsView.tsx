@@ -42,6 +42,24 @@ const GpsView = () => {
 
     const selectedGps = gpsList.find(gps => gps.id === selectedGpsId) ?? null;
 
+    const [focusedMoveTaskId, setFocusedMoveTaskId] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!selectedGps) {
+            setFocusedMoveTaskId(null);
+            return;
+        }
+        const moveTaskIds = selectedGps.majorMoves.map(move => move.taskId);
+        setFocusedMoveTaskId(prev => {
+            if (prev && moveTaskIds.includes(prev)) return prev;
+            const activeMove = selectedGps.majorMoves.find(move => {
+                const task = tasks.find(item => item.id === move.taskId);
+                return task && task.status !== 'done';
+            });
+            return (activeMove ?? selectedGps.majorMoves[0])?.taskId ?? null;
+        });
+    }, [selectedGps, tasks]);
+
     const handleCreate = async (input: GpsCreateInput) => {
         try {
             const result = await createGps(input).unwrap();
@@ -134,7 +152,7 @@ const GpsView = () => {
                             <div className="gps-split">
                                 <div className="gps-sprint-list">
                                     <div className="gps-focus-panel">
-                                        <FlowtimeTimer variant="panel" compact />
+                                        <FlowtimeTimer variant="panel" compact independent taskId={focusedMoveTaskId} />
                                     </div>
                                     <span className="gps-sprint-list__label">{t("gps.sprints")}</span>
                                     {gpsList.map((gps) => (
@@ -154,6 +172,8 @@ const GpsView = () => {
                                             tasks={tasks}
                                             onEdit={() => setMode('edit')}
                                             onDelete={handleDelete}
+                                            focusedTaskId={focusedMoveTaskId}
+                                            onFocusMove={setFocusedMoveTaskId}
                                         />
                                     )}
                                 </div>

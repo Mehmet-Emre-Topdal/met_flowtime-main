@@ -13,12 +13,15 @@ import { UserConfig, NOTIFICATION_SOUND_URL } from '@/types/config';
 interface FlowtimeTimerProps {
     variant?: 'panel' | 'bar';
     compact?: boolean;
+    independent?: boolean;
+    taskId?: string | null;
 }
 
-const FlowtimeTimer = ({ variant = 'panel', compact = false }: FlowtimeTimerProps) => {
+const FlowtimeTimer = ({ variant = 'panel', compact = false, independent = false, taskId = null }: FlowtimeTimerProps) => {
     const { t } = useTranslation();
     const { user } = useAppSelector((state) => state.auth);
-    const { selectedTaskId } = useAppSelector((state) => state.task);
+    const { selectedTaskId: globalSelectedTaskId } = useAppSelector((state) => state.task);
+    const effectiveTaskId = independent ? taskId : globalSelectedTaskId;
     const { config, isLoadedFromFirebase } = useAppSelector((state) => state.timer);
     const { data: firebaseConfig, isLoading: isConfigLoading } = useGetUserConfigQuery(user?.uid || '', { skip: !user?.uid || isLoadedFromFirebase });
     const { data: tasks = [] } = useGetTasksQuery(user?.uid || '', { skip: !user?.uid });
@@ -59,7 +62,7 @@ const FlowtimeTimer = ({ variant = 'panel', compact = false }: FlowtimeTimerProp
             throw err;
         }
     };
-    const activeTask = tasks.find(t => t.id === selectedTaskId);
+    const activeTask = tasks.find(t => t.id === effectiveTaskId);
 
     const [seconds, setSeconds] = useState(0);
     const [isActive, setIsActive] = useState(false);
@@ -104,7 +107,7 @@ const FlowtimeTimer = ({ variant = 'panel', compact = false }: FlowtimeTimerProp
                 endedAt: now.toISOString(),
                 durationSeconds: focusSeconds,
                 breakDurationSeconds: breakSecs,
-                taskId: selectedTaskId || null,
+                taskId: effectiveTaskId || null,
                 taskTitle: activeTask?.title || null,
             });
         } catch (err) {
@@ -135,10 +138,10 @@ const FlowtimeTimer = ({ variant = 'panel', compact = false }: FlowtimeTimerProp
     const takeBreak = async () => {
         const duration = Math.round(calculateBreakDuration(seconds, config.intervals));
 
-        if (selectedTaskId && seconds > 0) {
+        if (effectiveTaskId && seconds > 0) {
             const minutes = Math.floor(seconds / 60);
             if (minutes > 0) {
-                await updateTaskFocusTime({ taskId: selectedTaskId, additionalMinutes: minutes });
+                await updateTaskFocusTime({ taskId: effectiveTaskId, additionalMinutes: minutes });
             }
         }
 

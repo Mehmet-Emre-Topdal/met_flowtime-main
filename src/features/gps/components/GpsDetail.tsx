@@ -10,7 +10,8 @@ interface GpsDetailProps {
     tasks: TaskDto[];
     onEdit: () => void;
     onDelete: () => void;
-    onBack?: () => void;
+    focusedTaskId?: string | null;
+    onFocusMove?: (taskId: string) => void;
 }
 
 const statusLabelKey: Record<string, string> = {
@@ -19,26 +20,17 @@ const statusLabelKey: Record<string, string> = {
     done: 'tasks.doneShort',
 };
 
-const GpsDetail = ({ gps, tasks, onEdit, onDelete, onBack }: GpsDetailProps) => {
+const GpsDetail = ({ gps, tasks, onEdit, onDelete, focusedTaskId, onFocusMove }: GpsDetailProps) => {
     const { t } = useTranslation();
 
     return (
         <div className="flex flex-col gap-4 w-full pb-10">
-            <div className={`flex items-center gap-2 ${onBack ? 'justify-between' : 'justify-end'}`}>
-                {onBack && (
-                    <button onClick={onBack} className="flex items-center gap-2 text-xs text-[#9494a0] hover:text-[#1d1d22] transition-colors">
-                        <i className="pi pi-arrow-left text-[10px]" />
-                        <span>{t("gps.backToList")}</span>
-                    </button>
-                )}
-                <div className="flex items-center gap-2">
+            <div className="bg-[#ffffff] border border-[#ededf2] rounded-2xl px-6 py-5 shadow-[0_1px_3px_rgba(20,20,40,0.05)] flex items-center justify-between gap-3">
+                <h1 className="text-xl font-bold text-[#1d1d22] min-w-0 truncate">{gps.title}</h1>
+                <div className="flex items-center gap-2 shrink-0">
                     <Button label={t("common.edit")} icon="pi pi-pencil" onClick={onEdit} className="bg-[#f4f4f7] border border-[#e2e2ea] text-[#1d1d22] px-3 py-2 rounded-lg text-xs hover:bg-[#ededf2]" />
                     <Button icon="pi pi-trash" onClick={onDelete} className="bg-[#f4f4f7] border border-[#e2e2ea] text-[#9494a0] hover:text-red-500 w-9 h-9 rounded-lg" />
                 </div>
-            </div>
-
-            <div className="bg-[#ffffff] border border-[#ededf2] rounded-2xl px-6 py-5 shadow-[0_1px_3px_rgba(20,20,40,0.05)]">
-                <h1 className="text-xl font-bold text-[#1d1d22]">{gps.title}</h1>
             </div>
 
             <div className="border border-[#d4ebe5] bg-[#f5fbf9] rounded-2xl px-6 py-5">
@@ -90,15 +82,27 @@ const GpsDetail = ({ gps, tasks, onEdit, onDelete, onBack }: GpsDetailProps) => 
                     {gps.majorMoves.map((move, index) => {
                         const task = tasks.find(item => item.id === move.taskId);
                         const isDone = task?.status === 'done';
+                        const isFocused = Boolean(task && task.id === focusedTaskId);
+                        const canFocus = Boolean(task && onFocusMove);
                         return (
-                            <div key={move.id} className="border border-[#e4ecf8] rounded-xl px-3.5 py-3 bg-[#ffffff]">
+                            <div
+                                key={move.id}
+                                onClick={() => { if (task && onFocusMove) onFocusMove(task.id); }}
+                                className={`border rounded-xl px-3.5 py-3 bg-[#ffffff] transition-all ${canFocus ? 'cursor-pointer' : ''} ${isFocused ? 'border-[#7c6cd4] ring-1 ring-[#7c6cd4]/30' : `border-[#e4ecf8] ${canFocus ? 'hover:border-[#cdbff2]' : ''}`}`}
+                            >
                                 <div className="flex items-center gap-2.5">
-                                    <span className="w-[22px] h-[22px] rounded-lg bg-[#ecf2fc] text-[#3f74c4] flex items-center justify-center text-xs font-bold shrink-0" style={{ fontFamily: 'var(--font-mono)' }}>
+                                    <span className={`w-[22px] h-[22px] rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${isFocused ? 'bg-[#7c6cd4] text-white' : 'bg-[#ecf2fc] text-[#3f74c4]'}`} style={{ fontFamily: 'var(--font-mono)' }}>
                                         {index + 1}
                                     </span>
                                     <span className={`text-sm truncate ${isDone ? 'text-[#9aa0a6] line-through' : 'text-[#1d1d22]'}`}>{move.title}</span>
+                                    {isFocused && (
+                                        <span className="ml-auto flex items-center gap-1 text-[10.5px] font-semibold text-[#7c6cd4] bg-[#7c6cd4]/[0.10] rounded-md px-2 py-0.5 shrink-0">
+                                            <i className="pi pi-bolt text-[9px]" />
+                                            {t("tasks.focusing")}
+                                        </span>
+                                    )}
                                     {task && (
-                                        <span className="ml-auto text-[10.5px] text-[#9494a0] font-semibold bg-[#f0f0f4] rounded-md px-2 py-0.5 shrink-0">
+                                        <span className={`text-[10.5px] text-[#9494a0] font-semibold bg-[#f0f0f4] rounded-md px-2 py-0.5 shrink-0 ${isFocused ? '' : 'ml-auto'}`}>
                                             {t(statusLabelKey[task.status] ?? 'tasks.toDoShort')}
                                         </span>
                                     )}
