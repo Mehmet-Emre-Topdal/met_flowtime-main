@@ -5,7 +5,9 @@ import { LayoutGrid, Target } from "lucide-react";
 import { Menu } from "primereact/menu";
 import { useAppSelector, useAppDispatch } from "@/hooks/storeHooks";
 import { useLogoutMutation } from "@/features/auth/api/authApi";
-import { resetTimer } from "@/features/timer/slices/timerSlice";
+import { resetTimer, updateConfig, setLoadedFromFirebase } from "@/features/timer/slices/timerSlice";
+import { useGetUserConfigQuery } from "@/features/timer/api/timerApi";
+import { DEFAULT_CONFIG } from "@/types/config";
 import { resetTask } from "@/features/kanban/slices/taskSlice";
 import { resetCollection, setSelectedCollectionId, openCreateCollectionModal, openEditCollectionModal } from "@/features/collections/slices/collectionSlice";
 import { useCollections } from "@/features/collections/hooks/useCollections";
@@ -32,6 +34,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     const menuRef = useRef<Menu>(null);
     const [settingsVisible, setSettingsVisible] = useState(false);
     const { user, isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+    const isLoadedFromFirebase = useAppSelector((state) => state.timer.isLoadedFromFirebase);
+    const { data: firebaseConfig } = useGetUserConfigQuery(user?.uid || "", { skip: !user?.uid || isLoadedFromFirebase });
     const [logout] = useLogoutMutation();
     const { collections, selectedCollectionId, countTasksInCollection } = useCollections();
     const { data: tasks = [] } = useGetTasksQuery(user?.uid || "", { skip: !user?.uid });
@@ -42,6 +46,13 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             router.push("/login");
         }
     }, [isAuthenticated, isLoading, router]);
+
+    useEffect(() => {
+        if (firebaseConfig) {
+            dispatch(updateConfig({ ...DEFAULT_CONFIG, ...firebaseConfig }));
+            dispatch(setLoadedFromFirebase(true));
+        }
+    }, [firebaseConfig, dispatch]);
 
     const handleLogout = async () => {
         try {

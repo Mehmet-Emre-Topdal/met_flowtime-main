@@ -7,8 +7,8 @@ import { useUpdateUserConfigMutation } from '@/features/timer/api/timerApi';
 import { UserConfig } from '@/types/config';
 import { useTranslation } from 'react-i18next';
 import { dialogPt } from '@/utils/dialogStyles';
-import LanguageSettings from './LanguageSettings';
 import FlowIntervalsSettings from './FlowIntervalsSettings';
+import GpsDisplaySettings from './GpsDisplaySettings';
 
 interface SettingsModalProps {
     visible: boolean;
@@ -59,11 +59,11 @@ const SettingsModal = ({ visible, onHide }: SettingsModalProps) => {
             }
         >
             <div className="flex flex-col gap-6 mt-2">
-                <LanguageSettings />
+                <FlowIntervalsSettings localConfig={localConfig} setLocalConfig={setLocalConfig} />
 
                 <div className="h-px bg-[#ededf2]" />
 
-                <FlowIntervalsSettings localConfig={localConfig} setLocalConfig={setLocalConfig} />
+                <GpsDisplaySettings localConfig={localConfig} setLocalConfig={setLocalConfig} />
             </div>
         </Dialog>
     );

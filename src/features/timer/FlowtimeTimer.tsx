@@ -8,7 +8,7 @@ import { updateConfig, setLoadedFromFirebase } from '@/features/timer/slices/tim
 import { useAppDispatch, useAppSelector } from '@/hooks/storeHooks';
 import { useTranslation } from 'react-i18next';
 import { auth } from '@/lib/firebase';
-import { UserConfig, NOTIFICATION_SOUND_URL } from '@/types/config';
+import { UserConfig, NOTIFICATION_SOUND_URL, DEFAULT_CONFIG } from '@/types/config';
 
 interface FlowtimeTimerProps {
     variant?: 'panel' | 'bar';
@@ -30,7 +30,7 @@ const FlowtimeTimer = ({ variant = 'panel', compact = false, independent = false
 
     useEffect(() => {
         if (firebaseConfig) {
-            dispatch(updateConfig(firebaseConfig));
+            dispatch(updateConfig({ ...DEFAULT_CONFIG, ...firebaseConfig }));
             dispatch(setLoadedFromFirebase(true));
         }
     }, [firebaseConfig, dispatch]);

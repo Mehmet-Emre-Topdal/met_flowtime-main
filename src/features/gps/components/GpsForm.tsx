@@ -373,7 +373,7 @@ const GpsForm = ({
                     <label className={labelClass}>{t("gps.reminders")}</label>
                     {system.reminders.map((reminder) => (
                         <div key={reminder.id} className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <Dropdown value={reminder.day} options={dayOptions} onChange={(e) => updateReminder(reminder.id, { day: e.value })} className="bg-[#ffffff] border-[#ededf2] text-[#1d1d22] w-28 shrink-0" />
+                            <Dropdown value={reminder.day} options={dayOptions} onChange={(e) => updateReminder(reminder.id, { day: e.value })} className="bg-[#ffffff] border-[#ededf2] text-[#1d1d22] w-40 shrink-0" />
                             <InputText type="time" value={reminder.time} onChange={(e) => updateReminder(reminder.id, { time: e.target.value })} className="bg-[#ffffff] border-[#ededf2] text-[#1d1d22] w-28 shrink-0" />
                             <InputText value={reminder.label} onChange={(e) => updateReminder(reminder.id, { label: e.target.value })} placeholder={t("gps.reminderPlaceholder")} className={inputClass} />
                             <Button icon="pi pi-times" onClick={() => removeReminder(reminder.id)} className="bg-[#ededf2] border-none text-[#9494a0] hover:text-red-400 w-9 h-9 shrink-0" />

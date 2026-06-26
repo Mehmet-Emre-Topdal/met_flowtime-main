@@ -17,6 +17,7 @@ type ViewMode = 'browse' | 'create' | 'edit';
 const GpsView = () => {
     const { t } = useTranslation();
     const { user } = useAppSelector((state) => state.auth);
+    const showGpsCounter = useAppSelector((state) => state.timer.config.showGpsCounter);
     const {
         gpsList,
         isLoading,
@@ -164,9 +165,11 @@ const GpsView = () => {
                         ) : (
                             <div className="gps-split">
                                 <div className="gps-sprint-list">
-                                    <div className="gps-focus-panel">
-                                        <FlowtimeTimer variant="panel" compact independent taskId={focusedMoveTaskId} />
-                                    </div>
+                                    {showGpsCounter && (
+                                        <div className="gps-focus-panel">
+                                            <FlowtimeTimer variant="panel" compact independent taskId={focusedMoveTaskId} />
+                                        </div>
+                                    )}
                                     <span className="gps-sprint-list__label">{t("gps.sprints")}</span>
                                     {gpsList.map((gps) => (
                                         <GpsCard
