@@ -125,7 +125,7 @@ const TaskListView = ({ filterDaily }: TaskListViewProps) => {
                         label={t("tasks.newTask")}
                         icon="pi pi-plus"
                         onClick={() => setShowCreateDialog(true)}
-                        className="p-button-sm bg-[#7c6cd4] border-none text-white hover:bg-[#6b59c9] px-3 sm:px-4 py-2 rounded-lg text-xs font-medium"
+                        className="btn-primary p-button-sm px-3 sm:px-4 py-2 text-xs"
                     />
                 </div>
             </header>

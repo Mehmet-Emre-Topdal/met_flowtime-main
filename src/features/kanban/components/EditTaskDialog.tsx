@@ -157,7 +157,7 @@ const EditTaskDialog = ({ visible, onHide, editingTask, setEditingTask, onSaveEd
                         label={t("tasks.saveChanges")}
                         icon="pi pi-check"
                         onClick={onSaveEdit}
-                        className="bg-[#7c6cd4] border-none text-white py-2.5 rounded-lg hover:bg-[#6b59c9] font-medium"
+                        className="btn-primary py-2.5"
                     />
                 </div>
             )}

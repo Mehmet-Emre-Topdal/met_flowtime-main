@@ -53,7 +53,7 @@ const SettingsModal = ({ visible, onHide }: SettingsModalProps) => {
                         label={isUpdating ? t("common.loading") : t("settings.saveChanges")}
                         onClick={handleSave}
                         disabled={isUpdating}
-                        className="bg-[#7c6cd4] border-none text-white px-5 rounded-lg hover:bg-[#6b59c9]"
+                        className="btn-primary px-5"
                     />
                 </div>
             }

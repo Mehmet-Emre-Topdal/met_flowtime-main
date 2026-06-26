@@ -5,6 +5,7 @@ import {
     useUpdateGpsMutation,
     useDeleteGpsMutation,
     useAddMajorMoveMutation,
+    useUpdateMajorMoveMutation,
     useRemoveMajorMoveMutation,
 } from '../api/gpsApi';
 
@@ -16,6 +17,7 @@ export function useGpsCRUD() {
     const [updateGps, { isLoading: isUpdating }] = useUpdateGpsMutation();
     const [deleteGps] = useDeleteGpsMutation();
     const [addMajorMove, { isLoading: isAddingMove }] = useAddMajorMoveMutation();
+    const [updateMajorMove] = useUpdateMajorMoveMutation();
     const [removeMajorMove] = useRemoveMajorMoveMutation();
 
     return {
@@ -29,6 +31,7 @@ export function useGpsCRUD() {
         updateGps,
         deleteGps,
         addMajorMove,
+        updateMajorMove,
         removeMajorMove,
     };
 }

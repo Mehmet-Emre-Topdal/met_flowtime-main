@@ -662,6 +662,37 @@
 
 
 /* ═══════════════════════════════════════════════════════════
+   PRIMARY BUTTON — unified CTA style (matches timer "Başla")
+   ═══════════════════════════════════════════════════════════ */
+
+.btn-primary.p-button,
+button.btn-primary {
+    background: var(--accent) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 20px rgba(124, 111, 247, 0.35) !important;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast) !important;
+
+    &:hover:not(:disabled) {
+        background: var(--accent-hover) !important;
+        box-shadow: 0 4px 28px rgba(124, 111, 247, 0.5) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+
+    &:disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
    LOGIN PAGE
    ═══════════════════════════════════════════════════════════ */
 

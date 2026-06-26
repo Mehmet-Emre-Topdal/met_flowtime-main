@@ -17,15 +17,25 @@ import {
     GpsCreateInput,
     GpsUpdateInput,
 } from '@/types/gps';
+import { TaskDto } from '@/types/task';
+
+interface MajorMoveUpdate {
+    title?: string;
+    isNumeric?: boolean;
+    targetCount?: number | null;
+    remainingCount?: number | null;
+}
 
 interface GpsFormProps {
     mode: 'create' | 'edit';
     initial?: GpsDto | null;
+    tasks?: TaskDto[];
     submitting: boolean;
     addingMove?: boolean;
     onSubmitCreate?: (input: GpsCreateInput) => void;
     onSubmitEdit?: (updates: GpsUpdateInput) => void;
     onAddMove?: (move: GpsMajorMoveInput) => void;
+    onUpdateMove?: (moveId: string, updates: MajorMoveUpdate) => void;
     onRemoveMove?: (moveId: string) => void;
     onCancel: () => void;
 }
@@ -43,11 +53,13 @@ const labelClass = 'text-xs text-[#9494a0] font-medium';
 const GpsForm = ({
     mode,
     initial,
+    tasks = [],
     submitting,
     addingMove,
     onSubmitCreate,
     onSubmitEdit,
     onAddMove,
+    onUpdateMove,
     onRemoveMove,
     onCancel,
 }: GpsFormProps) => {
@@ -229,12 +241,68 @@ const GpsForm = ({
                         </>
                     ) : (
                         <>
-                            {existingMoves.map((move) => (
-                                <div key={move.id} className="flex items-center justify-between gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#ffffff]">
-                                    <span className="text-sm text-[#1d1d22] truncate">{move.title}</span>
-                                    <Button icon="pi pi-times" onClick={() => onRemoveMove?.(move.id)} className="bg-[#ededf2] border-none text-[#9494a0] hover:text-red-400 w-8 h-8 shrink-0" />
-                                </div>
-                            ))}
+                            {existingMoves.map((move) => {
+                                const moveTask = tasks.find(item => item.id === move.taskId);
+                                const moveIsNumeric = moveTask?.isNumeric ?? false;
+                                return (
+                                    <div key={move.id} className="flex flex-col gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#ffffff]">
+                                        <div className="flex items-center gap-2">
+                                            <InputText
+                                                defaultValue={move.title}
+                                                placeholder={t("gps.majorMovePlaceholder")}
+                                                onBlur={(e) => {
+                                                    const next = e.target.value.trim();
+                                                    if (next && next !== move.title) onUpdateMove?.(move.id, { title: next });
+                                                }}
+                                                onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                                                className={inputClass}
+                                            />
+                                            <Button icon="pi pi-times" onClick={() => onRemoveMove?.(move.id)} className="bg-[#ededf2] border-none text-[#9494a0] hover:text-red-400 w-9 h-9 shrink-0" />
+                                        </div>
+                                        <div className="flex items-center gap-3 flex-wrap">
+                                            <div className="flex items-center gap-2">
+                                                <Checkbox
+                                                    inputId={`edit-move-numeric-${move.id}`}
+                                                    checked={moveIsNumeric}
+                                                    onChange={(e) => {
+                                                        const checked = e.checked ?? false;
+                                                        if (checked) {
+                                                            const target = moveTask?.targetCount ?? 1;
+                                                            onUpdateMove?.(move.id, { isNumeric: true, targetCount: target, remainingCount: moveTask?.remainingCount ?? target });
+                                                        } else {
+                                                            onUpdateMove?.(move.id, { isNumeric: false, targetCount: null, remainingCount: null });
+                                                        }
+                                                    }}
+                                                    className="daily-checkbox"
+                                                />
+                                                <label htmlFor={`edit-move-numeric-${move.id}`} className="text-xs text-[#6b6b75] cursor-pointer select-none">{t("tasks.numericToggle")}</label>
+                                            </div>
+                                            {moveIsNumeric && (
+                                                <>
+                                                    <div className="flex items-center gap-2">
+                                                        <label className="text-xs text-[#9494a0]">{t("tasks.targetCount")}</label>
+                                                        <InputNumber
+                                                            value={moveTask?.targetCount ?? null}
+                                                            onValueChange={(e) => onUpdateMove?.(move.id, { targetCount: e.value ?? null })}
+                                                            min={0}
+                                                            inputClassName="w-16 bg-[#ffffff] border-[#ededf2] text-[#1d1d22] text-xs"
+                                                        />
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <label className="text-xs text-[#9494a0]">{t("tasks.remaining")}</label>
+                                                        <InputNumber
+                                                            value={moveTask?.remainingCount ?? null}
+                                                            onValueChange={(e) => onUpdateMove?.(move.id, { remainingCount: e.value ?? null })}
+                                                            min={0}
+                                                            inputClassName="w-16 bg-[#ffffff] border-[#ededf2] text-[#1d1d22] text-xs"
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                             {existingMoves.length < 5 && (
                                 <div className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-[#ededf2] bg-[#ffffff]">
                                     <div className="flex items-center gap-2">
@@ -330,7 +398,7 @@ const GpsForm = ({
                     loading={submitting}
                     disabled={!title.trim()}
                     onClick={handleSubmit}
-                    className="bg-[#7c6cd4] border-none text-white px-5 py-2.5 rounded-lg hover:bg-[#6b59c9] font-medium"
+                    className="btn-primary px-5 py-2.5"
                 />
             </div>
         </div>

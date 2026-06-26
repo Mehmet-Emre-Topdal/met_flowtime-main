@@ -27,6 +27,7 @@ const GpsView = () => {
         updateGps,
         deleteGps,
         addMajorMove,
+        updateMajorMove,
         removeMajorMove,
     } = useGpsCRUD();
     const { data: tasks = [] } = useGetTasksQuery(user?.uid || '', { skip: !user?.uid });
@@ -89,6 +90,18 @@ const GpsView = () => {
         }
     };
 
+    const handleUpdateMove = async (
+        moveId: string,
+        updates: { title?: string; isNumeric?: boolean; targetCount?: number | null; remainingCount?: number | null }
+    ) => {
+        if (!selectedGpsId) return;
+        try {
+            await updateMajorMove({ gpsId: selectedGpsId, moveId, ...updates }).unwrap();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const handleRemoveMove = async (moveId: string) => {
         if (!selectedGpsId) return;
         try {
@@ -139,7 +152,7 @@ const GpsView = () => {
                                 label={t("gps.newGps")}
                                 icon="pi pi-plus"
                                 onClick={() => setMode('create')}
-                                className="bg-[#7c6cd4] border-none text-white px-4 py-2.5 rounded-lg hover:bg-[#6b59c9] text-xs font-medium"
+                                className="btn-primary px-4 py-2.5 text-xs"
                             />
                         </header>
 
@@ -198,10 +211,12 @@ const GpsView = () => {
                         <GpsForm
                             mode="edit"
                             initial={selectedGps}
+                            tasks={tasks}
                             submitting={isUpdating}
                             addingMove={isAddingMove}
                             onSubmitEdit={handleEdit}
                             onAddMove={handleAddMove}
+                            onUpdateMove={handleUpdateMove}
                             onRemoveMove={handleRemoveMove}
                             onCancel={() => setMode('browse')}
                         />

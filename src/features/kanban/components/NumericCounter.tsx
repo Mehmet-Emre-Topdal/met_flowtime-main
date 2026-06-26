@@ -42,16 +42,16 @@ const NumericCounter = ({ task }: NumericCounterProps) => {
                 ) : (
                     <div className="flex gap-1.5">
                         <button
-                            onClick={() => setRemaining(remaining + 1)}
+                            onClick={() => setRemaining(remaining - 1)}
                             className="w-7 h-7 rounded-[8px] border border-[#e6e6ec] bg-[#ffffff] text-[#5d5d68] text-lg leading-none flex items-center justify-center hover:bg-[#f4f4f7] transition-colors"
-                            aria-label="increment remaining"
+                            aria-label="decrement remaining"
                         >
                             −
                         </button>
                         <button
-                            onClick={() => setRemaining(remaining - 1)}
+                            onClick={() => setRemaining(remaining + 1)}
                             className="w-7 h-7 rounded-[8px] bg-[#7c6cd4] text-white text-lg leading-none flex items-center justify-center hover:brightness-95 transition-all"
-                            aria-label="log progress"
+                            aria-label="increment remaining"
                         >
                             +
                         </button>

@@ -106,7 +106,7 @@ const CreateTaskDialog = ({ visible, onHide, newTask, setNewTask, onCreateTask }
                 <Button
                     label={t("tasks.createTask")}
                     onClick={onCreateTask}
-                    className="bg-[#7c6cd4] border-none text-white py-2.5 rounded-lg hover:bg-[#6b59c9] font-medium"
+                    className="btn-primary py-2.5"
                 />
             </div>
         </Dialog>
