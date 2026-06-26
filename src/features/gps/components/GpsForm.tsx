@@ -35,7 +35,9 @@ const newId = () => (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto
 const emptyMove: GpsMajorMoveInput = { title: '', isNumeric: false, targetCount: null };
 
 const inputClass = 'bg-[#ffffff] border-[#e2e2ea] text-[#1d1d22] focus:border-[#7c6cd4] w-full';
-const sectionClass = 'flex flex-col gap-4 p-5 rounded-2xl border border-[#ededf2] bg-[#ffffff]';
+const goalSectionClass = 'flex flex-col gap-4 p-5 rounded-2xl border border-[#d4ebe5] bg-[#f5fbf9]';
+const planSectionClass = 'flex flex-col gap-4 p-5 rounded-2xl border border-[#d8e4f7] bg-[#f6f9fe]';
+const systemSectionClass = 'flex flex-col gap-4 p-5 rounded-2xl border border-[#f0e2c8] bg-[#fdf9f0]';
 const labelClass = 'text-xs text-[#9494a0] font-medium';
 
 const GpsForm = ({
@@ -147,9 +149,9 @@ const GpsForm = ({
                 <InputText value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
             </div>
 
-            <div className={sectionClass}>
+            <div className={goalSectionClass}>
                 <div className="flex items-center gap-2">
-                    <span className="w-[26px] h-[26px] rounded-lg bg-[#2f9183] text-white flex items-center justify-center text-sm font-extrabold shrink-0">G</span>
+                    <span className="w-[26px] h-[26px] rounded-[8px] bg-[#2f9183] text-white flex items-center justify-center text-sm font-extrabold shrink-0">G</span>
                     <h3 className="text-sm font-semibold text-[#1d1d22]">{t("gps.goalLayer")}</h3>
                 </div>
 
@@ -186,9 +188,9 @@ const GpsForm = ({
                 </div>
             </div>
 
-            <div className={sectionClass}>
+            <div className={planSectionClass}>
                 <div className="flex items-center gap-2">
-                    <span className="w-[26px] h-[26px] rounded-lg bg-[#3f74c4] text-white flex items-center justify-center text-sm font-extrabold shrink-0">P</span>
+                    <span className="w-[26px] h-[26px] rounded-[8px] bg-[#3f74c4] text-white flex items-center justify-center text-sm font-extrabold shrink-0">P</span>
                     <h3 className="text-sm font-semibold text-[#1d1d22]">{t("gps.planLayer")}</h3>
                 </div>
 
@@ -198,7 +200,7 @@ const GpsForm = ({
                     {mode === 'create' ? (
                         <>
                             {createMoves.map((move, index) => (
-                                <div key={index} className="flex flex-col gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#f4f4f7]">
+                                <div key={index} className="flex flex-col gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#ffffff]">
                                     <div className="flex items-center gap-2">
                                         <InputText value={move.title} onChange={(e) => updateCreateMove(index, { title: e.target.value })} placeholder={t("gps.majorMovePlaceholder")} className={inputClass} />
                                         {createMoves.length > 1 && (
@@ -228,13 +230,13 @@ const GpsForm = ({
                     ) : (
                         <>
                             {existingMoves.map((move) => (
-                                <div key={move.id} className="flex items-center justify-between gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#f4f4f7]">
+                                <div key={move.id} className="flex items-center justify-between gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#ffffff]">
                                     <span className="text-sm text-[#1d1d22] truncate">{move.title}</span>
                                     <Button icon="pi pi-times" onClick={() => onRemoveMove?.(move.id)} className="bg-[#ededf2] border-none text-[#9494a0] hover:text-red-400 w-8 h-8 shrink-0" />
                                 </div>
                             ))}
                             {existingMoves.length < 5 && (
-                                <div className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-[#ededf2] bg-[#f4f4f7]">
+                                <div className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-[#ededf2] bg-[#ffffff]">
                                     <div className="flex items-center gap-2">
                                         <InputText value={draftMove.title} onChange={(e) => setDraftMove({ ...draftMove, title: e.target.value })} placeholder={t("gps.majorMovePlaceholder")} className={inputClass} />
                                         <Button
@@ -272,7 +274,7 @@ const GpsForm = ({
                     <label className={labelClass}>{t("gps.crystalBall")}</label>
                     <p className="text-[11px] text-[#9494a0]/70 -mt-1">{t("gps.crystalBallHint")}</p>
                     {crystalBall.map((scenario) => (
-                        <div key={scenario.id} className="flex flex-col gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#f4f4f7]">
+                        <div key={scenario.id} className="flex flex-col gap-2 p-3 rounded-lg border border-[#ededf2] bg-[#ffffff]">
                             <div className="flex items-center gap-2">
                                 <InputText value={scenario.scenario} onChange={(e) => updateScenario(scenario.id, { scenario: e.target.value })} placeholder={t("gps.failurePlaceholder")} className={inputClass} />
                                 {crystalBall.length > 1 && (
@@ -288,9 +290,9 @@ const GpsForm = ({
                 </div>
             </div>
 
-            <div className={sectionClass}>
+            <div className={systemSectionClass}>
                 <div className="flex items-center gap-2">
-                    <span className="w-[26px] h-[26px] rounded-lg bg-[#c87f2e] text-white flex items-center justify-center text-sm font-extrabold shrink-0">S</span>
+                    <span className="w-[26px] h-[26px] rounded-[8px] bg-[#c87f2e] text-white flex items-center justify-center text-sm font-extrabold shrink-0">S</span>
                     <h3 className="text-sm font-semibold text-[#1d1d22]">{t("gps.systemLayer")}</h3>
                 </div>
 
@@ -303,8 +305,8 @@ const GpsForm = ({
                     <label className={labelClass}>{t("gps.reminders")}</label>
                     {system.reminders.map((reminder) => (
                         <div key={reminder.id} className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <Dropdown value={reminder.day} options={dayOptions} onChange={(e) => updateReminder(reminder.id, { day: e.value })} className="bg-[#f4f4f7] border-[#ededf2] text-[#1d1d22] w-28 shrink-0" />
-                            <InputText type="time" value={reminder.time} onChange={(e) => updateReminder(reminder.id, { time: e.target.value })} className="bg-[#f4f4f7] border-[#ededf2] text-[#1d1d22] w-28 shrink-0" />
+                            <Dropdown value={reminder.day} options={dayOptions} onChange={(e) => updateReminder(reminder.id, { day: e.value })} className="bg-[#ffffff] border-[#ededf2] text-[#1d1d22] w-28 shrink-0" />
+                            <InputText type="time" value={reminder.time} onChange={(e) => updateReminder(reminder.id, { time: e.target.value })} className="bg-[#ffffff] border-[#ededf2] text-[#1d1d22] w-28 shrink-0" />
                             <InputText value={reminder.label} onChange={(e) => updateReminder(reminder.id, { label: e.target.value })} placeholder={t("gps.reminderPlaceholder")} className={inputClass} />
                             <Button icon="pi pi-times" onClick={() => removeReminder(reminder.id)} className="bg-[#ededf2] border-none text-[#9494a0] hover:text-red-400 w-9 h-9 shrink-0" />
                         </div>

@@ -35,7 +35,7 @@ const GpsDetail = ({ gps, tasks, onEdit, onDelete, focusedTaskId, onFocusMove }:
 
             <div className="border border-[#d4ebe5] bg-[#f5fbf9] rounded-2xl px-6 py-5">
                 <div className="flex items-center gap-2.5 mb-4">
-                    <span className="w-[26px] h-[26px] rounded-lg bg-[#2f9183] text-white flex items-center justify-center text-sm font-extrabold shrink-0">G</span>
+                    <span className="w-[26px] h-[26px] rounded-[8px] bg-[#2f9183] text-white flex items-center justify-center text-sm font-extrabold shrink-0">G</span>
                     <div>
                         <div className="text-sm font-bold text-[#23766b]">{t("gps.goalLayer")}</div>
                         <div className="text-[11.5px] text-[#5f9a90]">{t("gps.goalLayerHint")}</div>
@@ -70,7 +70,7 @@ const GpsDetail = ({ gps, tasks, onEdit, onDelete, focusedTaskId, onFocusMove }:
 
             <div className="border border-[#d8e4f7] bg-[#f6f9fe] rounded-2xl px-6 py-5">
                 <div className="flex items-center gap-2.5 mb-4">
-                    <span className="w-[26px] h-[26px] rounded-lg bg-[#3f74c4] text-white flex items-center justify-center text-sm font-extrabold shrink-0">P</span>
+                    <span className="w-[26px] h-[26px] rounded-[8px] bg-[#3f74c4] text-white flex items-center justify-center text-sm font-extrabold shrink-0">P</span>
                     <div>
                         <div className="text-sm font-bold text-[#345fa1]">{t("gps.planLayer")}</div>
                         <div className="text-[11.5px] text-[#6789c0]">{t("gps.planLayerHint")}</div>
@@ -91,7 +91,7 @@ const GpsDetail = ({ gps, tasks, onEdit, onDelete, focusedTaskId, onFocusMove }:
                                 className={`border rounded-xl px-3.5 py-3 bg-[#ffffff] transition-all ${canFocus ? 'cursor-pointer' : ''} ${isFocused ? 'border-[#7c6cd4] ring-1 ring-[#7c6cd4]/30' : `border-[#e4ecf8] ${canFocus ? 'hover:border-[#cdbff2]' : ''}`}`}
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <span className={`w-[22px] h-[22px] rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${isFocused ? 'bg-[#7c6cd4] text-white' : 'bg-[#ecf2fc] text-[#3f74c4]'}`} style={{ fontFamily: 'var(--font-mono)' }}>
+                                    <span className={`w-[22px] h-[22px] rounded-[7px] flex items-center justify-center text-xs font-bold shrink-0 ${isFocused ? 'bg-[#7c6cd4] text-white' : 'bg-[#ecf2fc] text-[#3f74c4]'}`} style={{ fontFamily: 'var(--font-mono)' }}>
                                         {index + 1}
                                     </span>
                                     <span className={`text-sm truncate ${isDone ? 'text-[#9aa0a6] line-through' : 'text-[#1d1d22]'}`}>{move.title}</span>
@@ -145,7 +145,7 @@ const GpsDetail = ({ gps, tasks, onEdit, onDelete, focusedTaskId, onFocusMove }:
 
             <div className="border border-[#f0e2c8] bg-[#fdf9f0] rounded-2xl px-6 py-5">
                 <div className="flex items-center gap-2.5 mb-4">
-                    <span className="w-[26px] h-[26px] rounded-lg bg-[#c87f2e] text-white flex items-center justify-center text-sm font-extrabold shrink-0">S</span>
+                    <span className="w-[26px] h-[26px] rounded-[8px] bg-[#c87f2e] text-white flex items-center justify-center text-sm font-extrabold shrink-0">S</span>
                     <div>
                         <div className="text-sm font-bold text-[#a3681f]">{t("gps.systemLayer")}</div>
                         <div className="text-[11.5px] text-[#bd8e4e]">{t("gps.systemLayerHint")}</div>
